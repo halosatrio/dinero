@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-
-function IndexPage() {
-  return <div>Hello /!</div>;
-}
+import AppLayout from "../components/AppLayout";
 
 export const Route = createFileRoute("/")({
   component: IndexPage,
 });
+
+function IndexPage() {
+  return <AppLayout>hehehehe</AppLayout>;
+}
