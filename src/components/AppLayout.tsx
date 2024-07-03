@@ -12,7 +12,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   };
 
   return (
-    <Container size="xs" p={0} {...demoProps}>
+    <Container size="xs" pt="xs" p={0} {...demoProps}>
       {children}
     </Container>
   );
