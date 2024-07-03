@@ -12,16 +12,13 @@ function LoginPage() {
       <Center h="100%">
         <Stack>
           <h2>Sign in to your account</h2>
-
           <form>
             <TextInput
               label="Email Address"
               placeholder="email address..."
               mb="xl"
             />
-
             <PasswordInput label="Password" placeholder="password..." mb="xl" />
-
             <Button fullWidth>Sign In</Button>
           </form>
         </Stack>
