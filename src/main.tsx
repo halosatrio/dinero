@@ -2,13 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { MantineProvider } from "@mantine/core";
+
+// Import styles of packages that you've installed.
+// All packages except `@mantine/hooks` require styles imports
+import "@mantine/core/styles.css";
 
 // import the generated route tree
 import { routeTree } from "./routeTree.gen";
-
 // create a new router instance
 const router = createRouter({ routeTree });
-
 // register the router instance for the type safety
 declare module "@tanstack/react-router" {
   interface Register {
@@ -18,6 +21,8 @@ declare module "@tanstack/react-router" {
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <MantineProvider>
+      <RouterProvider router={router} />
+    </MantineProvider>
   </React.StrictMode>
 );
