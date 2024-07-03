@@ -1,3 +1,4 @@
+import { Container } from "@mantine/core";
 import { ReactNode } from "react";
 
 type AppLayoutProps = {
@@ -5,9 +6,14 @@ type AppLayoutProps = {
 };
 
 export default function AppLayout({ children }: AppLayoutProps) {
+  const demoProps = {
+    bg: "var(--mantine-color-blue-light)",
+    h: "100vh",
+  };
+
   return (
-    <div className="w-full max-w-[480px] h-screen bg-slate-50 my-0 mx-auto border-2 border-slate-700">
+    <Container size="xs" p={0} {...demoProps}>
       {children}
-    </div>
+    </Container>
   );
 }
