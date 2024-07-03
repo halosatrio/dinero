@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { MantineProvider } from "@mantine/core";
+import "./index.css";
 
 // Import styles of packages that you've installed.
 // All packages except `@mantine/hooks` require styles imports
