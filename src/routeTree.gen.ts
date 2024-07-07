@@ -11,13 +11,31 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TransactionsImport } from './routes/transactions'
+import { Route as ReportsImport } from './routes/reports'
 import { Route as LoginImport } from './routes/login'
+import { Route as AssetsImport } from './routes/assets'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
+const TransactionsRoute = TransactionsImport.update({
+  path: '/transactions',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ReportsRoute = ReportsImport.update({
+  path: '/reports',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const LoginRoute = LoginImport.update({
   path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AssetsRoute = AssetsImport.update({
+  path: '/assets',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -37,6 +55,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/assets': {
+      id: '/assets'
+      path: '/assets'
+      fullPath: '/assets'
+      preLoaderRoute: typeof AssetsImport
+      parentRoute: typeof rootRoute
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -44,12 +69,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsImport
+      parentRoute: typeof rootRoute
+    }
+    '/transactions': {
+      id: '/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof TransactionsImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({ IndexRoute, LoginRoute })
+export const routeTree = rootRoute.addChildren({
+  IndexRoute,
+  AssetsRoute,
+  LoginRoute,
+  ReportsRoute,
+  TransactionsRoute,
+})
 
 /* prettier-ignore-end */
 
@@ -60,14 +105,26 @@ export const routeTree = rootRoute.addChildren({ IndexRoute, LoginRoute })
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/login"
+        "/assets",
+        "/login",
+        "/reports",
+        "/transactions"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
+    "/assets": {
+      "filePath": "assets.tsx"
+    },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/reports": {
+      "filePath": "reports.tsx"
+    },
+    "/transactions": {
+      "filePath": "transactions.tsx"
     }
   }
 }
