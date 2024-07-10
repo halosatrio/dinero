@@ -2,15 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import AppLayout from "../components/AppLayout";
 import dayjs from "dayjs";
 import NavigationBar from "../components/NavigationBar";
-import {
-  Button,
-  Center,
-  Paper,
-  Stack,
-  Table,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Button, Center, Paper, Stack, Table, Title } from "@mantine/core";
+import { useIcon } from "../helper/userIcon";
 
 export const Route = createFileRoute("/")({
   component: IndexPage,
@@ -52,8 +45,8 @@ function IndexPage() {
           currency: "IDR",
         }).format(element.amount)}
       </Table.Td>
-      <Table.Td>{element.category}</Table.Td>
-      <Table.Td>{element.note}</Table.Td>
+      <Table.Td pl="1.5rem">{useIcon(element.category)}</Table.Td>
+      <Table.Td miw="6rem">{element.note}</Table.Td>
     </Table.Tr>
   ));
 
