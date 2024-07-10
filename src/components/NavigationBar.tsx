@@ -9,7 +9,7 @@ import { Link } from "@tanstack/react-router";
 
 export default function NavigationBar() {
   return (
-    <Paper bg="teal.2" mt="xl">
+    <Paper bg="teal.2" mt="xl" py="sm">
       <Grid>
         <Grid.Col span={3}>
           <Link to={"/"}>

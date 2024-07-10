@@ -2,6 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import AppLayout from "../components/AppLayout";
 import dayjs from "dayjs";
 import NavigationBar from "../components/NavigationBar";
+import {
+  Button,
+  Center,
+  Paper,
+  Stack,
+  Table,
+  Text,
+  Title,
+} from "@mantine/core";
 
 export const Route = createFileRoute("/")({
   component: IndexPage,
@@ -35,12 +44,50 @@ function IndexPage() {
     },
   ];
 
+  const rows = data.map((element) => (
+    <Table.Tr key={element.id}>
+      <Table.Td>
+        {new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        }).format(element.amount)}
+      </Table.Td>
+      <Table.Td>{element.category}</Table.Td>
+      <Table.Td>{element.note}</Table.Td>
+    </Table.Tr>
+  ));
+
   const today = dayjs();
   return (
     <AppLayout>
-      <div className="text-center">{today.format("dddd, DD MMMM YYYY")}</div>
+      <Stack>
+        <div>
+          <Title order={3} ta="center" mt="xl">
+            {today.format("dddd, DD MMMM YYYY")}
+          </Title>
+          <Paper mx="lg" mt="4rem" p="lg" shadow="md">
+            <Table>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Amount</Table.Th>
+                  <Table.Th>Category</Table.Th>
+                  <Table.Th>Notes</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>{rows}</Table.Tbody>
+            </Table>
+          </Paper>
+          <Center mt="4rem">
+            <Button size="lg" w="20rem">
+              New Transaction
+            </Button>
+          </Center>
+        </div>
 
-      <NavigationBar />
+        <NavigationBar />
+      </Stack>
+      {/* <div style={{ position: "fixed", bottom: 0, width: "50%" }}>
+      </div> */}
     </AppLayout>
   );
 }
