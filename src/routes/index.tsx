@@ -3,7 +3,7 @@ import AppLayout from "../components/AppLayout";
 import dayjs from "dayjs";
 import NavigationBar from "../components/NavigationBar";
 import { Button, Center, Paper, Stack, Table, Title } from "@mantine/core";
-import { useIcon } from "../helper/userIcon";
+import { useIcon } from "../helper/useIcon";
 
 export const Route = createFileRoute("/")({
   component: IndexPage,
