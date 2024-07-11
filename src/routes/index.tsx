@@ -4,12 +4,16 @@ import dayjs from "dayjs";
 import NavigationBar from "../components/NavigationBar";
 import { Button, Center, Paper, Stack, Table, Title } from "@mantine/core";
 import { useIcon } from "../helper/useIcon";
+import ModalNewTransaction from "../components/ModalNewTransactions";
+import { useDisclosure } from "@mantine/hooks";
 
 export const Route = createFileRoute("/")({
   component: IndexPage,
 });
 
 function IndexPage() {
+  const [opened, { open, close }] = useDisclosure();
+
   const data = [
     {
       id: 4,
@@ -54,6 +58,8 @@ function IndexPage() {
   return (
     <AppLayout>
       <Stack>
+        <NavigationBar />
+
         <div>
           <Title order={3} ta="center" mt="xl">
             {today.format("dddd, DD MMMM YYYY")}
@@ -71,16 +77,15 @@ function IndexPage() {
             </Table>
           </Paper>
           <Center mt="4rem">
-            <Button size="lg" w="20rem">
+            <Button size="lg" w="20rem" onClick={open}>
               New Transaction
             </Button>
           </Center>
         </div>
-
-        <NavigationBar />
       </Stack>
-      {/* <div style={{ position: "fixed", bottom: 0, width: "50%" }}>
-      </div> */}
+
+      {/* Modal */}
+      <ModalNewTransaction open={opened} close={close} />
     </AppLayout>
   );
 }

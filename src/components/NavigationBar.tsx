@@ -9,33 +9,33 @@ import { Link } from "@tanstack/react-router";
 
 export default function NavigationBar() {
   return (
-    <Paper bg="teal.2" mt="xl" py="sm">
+    <Paper bg="teal.2" mb="xl" py="lg" radius={0}>
       <Grid>
         <Grid.Col span={3}>
           <Link to={"/"}>
             <Center>
-              <IconHomeFilled />
+              <IconHomeFilled size={36} />
             </Center>
           </Link>
         </Grid.Col>
         <Grid.Col span={3}>
           <Link to={"/transactions"}>
             <Center>
-              <IconFileSpreadsheet />
+              <IconFileSpreadsheet size={36} />
             </Center>
           </Link>
         </Grid.Col>
         <Grid.Col span={3}>
           <Link to={"/reports"}>
             <Center>
-              <IconChartPieFilled />
+              <IconChartPieFilled size={36} />
             </Center>
           </Link>
         </Grid.Col>
         <Grid.Col span={3}>
           <Link to={"/assets"}>
             <Center>
-              <IconCash />
+              <IconCash size={36} />
             </Center>
           </Link>
         </Grid.Col>
