@@ -5,7 +5,6 @@ import {
   Select,
   Stack,
   TextInput,
-  Title,
 } from "@mantine/core";
 import { CATEGORY } from "../helper/constant";
 import { IconCalendar } from "@tabler/icons-react";
@@ -14,6 +13,7 @@ import { useForm } from "@mantine/form";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import dayjs from "dayjs";
+import { notifications } from "@mantine/notifications";
 
 type ModalNewTransactionProps = {
   open: boolean;
@@ -36,17 +36,29 @@ export default function ModalNewTransaction({
 
   const { mutate } = useMutation({
     mutationFn: async (bodyReq: NewTransactionSchema) => {
-      axios.post(
-        `${import.meta.env.VITE_API_URL}/transaction/create`,
-        {
-          ...bodyReq,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+      await axios
+        .post(
+          `${import.meta.env.VITE_API_URL}/transaction/create`,
+          {
+            ...bodyReq,
           },
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+            },
+          }
+        )
+        .catch((err) => {
+          throw new Error(JSON.stringify(err.response.data));
+        });
+    },
+    onError: (err) => {
+      let error = JSON.parse(err.message);
+      notifications.show({
+        color: "red",
+        title: error.status,
+        message: error.message,
+      });
     },
     onSuccess: () => {
       close();
@@ -67,8 +79,9 @@ export default function ModalNewTransaction({
     <Modal
       opened={open}
       onClose={close}
-      title={<Title order={3}>New Transaction</Title>}
+      title="New Transaction"
       centered
+      styles={{ title: { fontWeight: "bold" } }}
     >
       <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
         <Stack mt="sm" gap="lg">
@@ -84,6 +97,7 @@ export default function ModalNewTransaction({
             required
             label="Cash In/Out"
             data={["outflow", "inflow"]}
+            defaultValue={"outflow"}
             placeholder="Cash In / Cash Out"
             {...form.getInputProps("type")}
           />

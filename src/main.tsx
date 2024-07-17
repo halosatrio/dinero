@@ -9,12 +9,14 @@ import "./index.css";
 // All packages except `@mantine/hooks` require styles imports
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
+import "@mantine/notifications/styles.css";
 
 // Create a client
 const queryClient = new QueryClient();
 
 // import the generated route tree
 import { routeTree } from "./routeTree.gen";
+import { Notifications } from "@mantine/notifications";
 // create a new router instance
 const router = createRouter({ routeTree });
 // register the router instance for the type safety
@@ -27,6 +29,7 @@ declare module "@tanstack/react-router" {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <MantineProvider>
+      <Notifications position="bottom-center" />
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>
