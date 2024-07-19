@@ -2,10 +2,20 @@ import { createFileRoute } from "@tanstack/react-router";
 import AppLayout from "../components/AppLayout";
 import dayjs from "dayjs";
 import NavigationBar from "../components/NavigationBar";
-import { Button, Center, Paper, Stack, Table, Title } from "@mantine/core";
+import {
+  Button,
+  Center,
+  LoadingOverlay,
+  Paper,
+  Stack,
+  Table,
+  Title,
+} from "@mantine/core";
 import { useIcon } from "../helper/useIcon";
 import ModalNewTransaction from "../components/ModalNewTransactions";
 import { useDisclosure } from "@mantine/hooks";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export const Route = createFileRoute("/")({
   component: IndexPage,
@@ -14,6 +24,25 @@ export const Route = createFileRoute("/")({
 function IndexPage() {
   const [opened, { open, close }] = useDisclosure();
 
+  const now = dayjs();
+
+  const {
+    data: dataTx,
+    isLoading,
+    isSuccess,
+    status,
+  } = useQuery({
+    queryKey: ["get-transaction"],
+    queryFn: async (): Promise<any> => {
+      await axios
+        .get(`${import.meta.env.VITE_API_URL}/transaction`, {
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+          },
+        })
+        .then((res) => res.data.data);
+    },
+  });
   const data = [
     {
       id: 4,
@@ -41,7 +70,7 @@ function IndexPage() {
     },
   ];
 
-  const rows = data.map((element) => (
+  const rows = data.map((element: any) => (
     <Table.Tr key={element.id}>
       <Table.Td>
         {new Intl.NumberFormat("id-ID", {
@@ -59,6 +88,7 @@ function IndexPage() {
     <AppLayout>
       <Stack>
         <NavigationBar />
+        <LoadingOverlay visible={isLoading} />
 
         <div>
           <Title order={3} ta="center" mt="xl">
