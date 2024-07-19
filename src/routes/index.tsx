@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
 function IndexPage() {
   const [opened, { open, close }] = useDisclosure();
 
-  const now = dayjs();
+  const today = dayjs();
 
   const {
     data: dataTx,
@@ -36,6 +36,10 @@ function IndexPage() {
     queryFn: async (): Promise<any> => {
       await axios
         .get(`${import.meta.env.VITE_API_URL}/transaction`, {
+          params: {
+            date_start: today.startOf("month").format("YYYY-MM-DD"),
+            date_end: today.endOf("month").format("YYYY-MM-DD"),
+          },
           headers: {
             Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
           },
@@ -83,7 +87,6 @@ function IndexPage() {
     </Table.Tr>
   ));
 
-  const today = dayjs();
   return (
     <AppLayout>
       <Stack>
