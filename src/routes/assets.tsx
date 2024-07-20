@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import AppLayout from "../components/AppLayout";
 import NavigationBar from "../components/NavigationBar";
+import { AppShell } from "@mantine/core";
 
 export const Route = createFileRoute("/assets")({
   component: AssetsPage,
@@ -8,9 +8,15 @@ export const Route = createFileRoute("/assets")({
 
 function AssetsPage() {
   return (
-    <AppLayout>
-      <div>Hello /asset!</div>
-      <NavigationBar />
-    </AppLayout>
+    // <AppLayout>
+    <AppShell>
+      <AppShell.Main>
+        <div>Hello /asset!</div>
+      </AppShell.Main>
+      <AppShell.Footer>
+        <NavigationBar />
+      </AppShell.Footer>
+    </AppShell>
+    // </AppLayout>
   );
 }

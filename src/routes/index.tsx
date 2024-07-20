@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import {
+  AppShell,
   Button,
   Center,
   LoadingOverlay,
@@ -19,7 +20,7 @@ import {
   type GetTransactionResponse,
   type GetTransactionData,
 } from "@/api/endpoints/get-transaction";
-import AppLayout from "@/components/AppLayout";
+// import AppLayout from "@/components/AppLayout";
 import NavigationBar from "@/components/NavigationBar";
 import { IconDatabaseOff } from "@tabler/icons-react";
 
@@ -83,6 +84,7 @@ function IndexPage() {
             {new Intl.NumberFormat("id-ID", {
               style: "currency",
               currency: "IDR",
+              minimumFractionDigits: 0,
             }).format(element.amount)}
           </Table.Td>
           <Table.Td pl="1.5rem">{useIcon(element.category)}</Table.Td>
@@ -93,67 +95,74 @@ function IndexPage() {
 
   const monthRows = dataTxMonth?.data.map((item: GetTransactionData) => (
     <Table.Tr key={item.id}>
-      <Table.Td>{dayjs(item.date).format("DD MMMM")}</Table.Td>
-      <Table.Td>
+      <Table.Td fz="xs">{dayjs(item.date).format("DD")}</Table.Td>
+      <Table.Td fz="xs" align="right">
         {new Intl.NumberFormat("id-ID", {
           style: "currency",
           currency: "IDR",
+          minimumFractionDigits: 0,
         }).format(item.amount)}
       </Table.Td>
-      <Table.Td pl="1.5rem">{useIcon(item.category)}</Table.Td>
-      <Table.Td miw="6rem">{item.notes}</Table.Td>
+      <Table.Td fz="xs" pl="1.5rem">
+        {useIcon(item.category)}
+      </Table.Td>
+      <Table.Td fz="xs" miw="6rem">
+        {item.notes}
+      </Table.Td>
     </Table.Tr>
   ));
 
   return (
-    <AppLayout>
-      <Stack>
-        <NavigationBar />
+    <AppShell pt="lg">
+      <AppShell.Main pb="5rem">
         <LoadingOverlay visible={isLoading || isDataMonthLoading} />
+        <Stack>
+          <div>
+            <Center mb="xl">
+              <Button size="lg" w="20rem" onClick={open}>
+                New Transaction
+              </Button>
+            </Center>
+            <Title order={3} ta="center">
+              {today.format("dddd, DD MMMM YYYY")}
+            </Title>
+            <Paper mx="lg" mt="md" p="lg" shadow="md">
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>Amount</Table.Th>
+                    <Table.Th>Category</Table.Th>
+                    <Table.Th>Notes</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>{rows}</Table.Tbody>
+              </Table>
+            </Paper>
 
-        <div>
-          <Center mb="xl">
-            <Button size="lg" w="20rem" onClick={open}>
-              New Transaction
-            </Button>
-          </Center>
-          <Title order={3} ta="center">
-            {today.format("dddd, DD MMMM YYYY")}
-          </Title>
-          <Paper mx="lg" mt="md" p="lg" shadow="md">
-            <Table>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>Amount</Table.Th>
-                  <Table.Th>Category</Table.Th>
-                  <Table.Th>Notes</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>{rows}</Table.Tbody>
-            </Table>
-          </Paper>
-
-          <Title order={3} ta="center" mt="3rem">
-            Transactions: {today.format("MMMM YYYY")}
-          </Title>
-          <Paper mx="lg" mt="md" p="lg" shadow="md">
-            <Table>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>Date</Table.Th>
-                  <Table.Th>Amount</Table.Th>
-                  <Table.Th>Category</Table.Th>
-                  <Table.Th>Notes</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>{monthRows}</Table.Tbody>
-            </Table>
-          </Paper>
-        </div>
-      </Stack>
-
+            <Title order={3} ta="center" mt="3rem">
+              Transactions: {today.format("MMMM YYYY")}
+            </Title>
+            <Paper mx="sm" mt="md" p="xs" shadow="md">
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>Date</Table.Th>
+                    <Table.Th>Amount</Table.Th>
+                    <Table.Th>Category</Table.Th>
+                    <Table.Th>Notes</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>{monthRows}</Table.Tbody>
+              </Table>
+            </Paper>
+          </div>
+        </Stack>
+      </AppShell.Main>
+      <AppShell.Footer>
+        <NavigationBar />
+      </AppShell.Footer>
       {/* Modal */}
       <ModalNewTransaction open={opened} close={close} />
-    </AppLayout>
+    </AppShell>
   );
 }
