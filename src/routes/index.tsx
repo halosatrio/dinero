@@ -31,15 +31,35 @@ function IndexPage() {
   const today = dayjs();
 
   const { data: dataTx, isLoading } = useQuery<GetTransactionResponse>({
-    queryKey: ["get-transaction"],
+    queryKey: ["get-transaction-month"],
     queryFn: () =>
       getTransaction({
+        params: {
+          date_start: today.format("YYYY-MM-DD"),
+          date_end: today.format("YYYY-MM-DD"),
+        },
         headers: {
           Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
         },
       }),
     retry: false,
   });
+
+  const { data: dataTxMonth, isLoading: isDataMonthLoading } =
+    useQuery<GetTransactionResponse>({
+      queryKey: ["get-transaction-all"],
+      queryFn: () =>
+        getTransaction({
+          params: {
+            date_start: today.startOf("month").format("YYYY-MM-DD"),
+            date_end: today.endOf("month").format("YYYY-MM-DD"),
+          },
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+          },
+        }),
+      retry: false,
+    });
 
   const rows = dataTx?.data.map((element: GetTransactionData) => (
     <Table.Tr key={element.id}>
@@ -54,11 +74,25 @@ function IndexPage() {
     </Table.Tr>
   ));
 
+  const monthRows = dataTxMonth?.data.map((item: GetTransactionData) => (
+    <Table.Tr key={item.id}>
+      <Table.Td>{dayjs(item.date).format("DD-MM-YYYY")}</Table.Td>
+      <Table.Td>
+        {new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        }).format(item.amount)}
+      </Table.Td>
+      <Table.Td pl="1.5rem">{useIcon(item.category)}</Table.Td>
+      <Table.Td miw="6rem">{item.notes}</Table.Td>
+    </Table.Tr>
+  ));
+
   return (
     <AppLayout>
       <Stack>
         <NavigationBar />
-        <LoadingOverlay visible={isLoading} />
+        <LoadingOverlay visible={isLoading || isDataMonthLoading} />
 
         <div>
           <Title order={3} ta="center" mt="xl">
@@ -81,6 +115,20 @@ function IndexPage() {
               New Transaction
             </Button>
           </Center>
+
+          <Paper mx="lg" mt="4rem" p="lg" shadow="md">
+            <Table>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Date</Table.Th>
+                  <Table.Th>Amount</Table.Th>
+                  <Table.Th>Category</Table.Th>
+                  <Table.Th>Notes</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>{monthRows}</Table.Tbody>
+            </Table>
+          </Paper>
         </div>
       </Stack>
 
