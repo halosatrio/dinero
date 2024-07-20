@@ -93,7 +93,7 @@ function IndexPage() {
 
   const monthRows = dataTxMonth?.data.map((item: GetTransactionData) => (
     <Table.Tr key={item.id}>
-      <Table.Td>{dayjs(item.date).format("DD-MM-YYYY")}</Table.Td>
+      <Table.Td>{dayjs(item.date).format("DD MMMM")}</Table.Td>
       <Table.Td>
         {new Intl.NumberFormat("id-ID", {
           style: "currency",
