@@ -7,6 +7,7 @@ import {
   Paper,
   Stack,
   Table,
+  Text,
   Title,
 } from "@mantine/core";
 import { useIcon } from "@/helper/useIcon";
@@ -20,6 +21,7 @@ import {
 } from "@/api/endpoints/get-transaction";
 import AppLayout from "@/components/AppLayout";
 import NavigationBar from "@/components/NavigationBar";
+import { IconDatabaseOff } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/")({
   component: IndexPage,
@@ -61,18 +63,33 @@ function IndexPage() {
       retry: false,
     });
 
-  const rows = dataTx?.data.map((element: GetTransactionData) => (
-    <Table.Tr key={element.id}>
-      <Table.Td>
-        {new Intl.NumberFormat("id-ID", {
-          style: "currency",
-          currency: "IDR",
-        }).format(element.amount)}
-      </Table.Td>
-      <Table.Td pl="1.5rem">{useIcon(element.category)}</Table.Td>
-      <Table.Td miw="6rem">{element.notes}</Table.Td>
-    </Table.Tr>
-  ));
+  // handle no item rows
+  const rows =
+    dataTx?.data?.length === 0 ? (
+      <Table.Tr>
+        <Table.Td colSpan={3}>
+          <Center mt="md">
+            <IconDatabaseOff />
+            <Text ml="md" fw={500}>
+              No Data
+            </Text>
+          </Center>
+        </Table.Td>
+      </Table.Tr>
+    ) : (
+      dataTx?.data.map((element: GetTransactionData) => (
+        <Table.Tr key={element.id}>
+          <Table.Td>
+            {new Intl.NumberFormat("id-ID", {
+              style: "currency",
+              currency: "IDR",
+            }).format(element.amount)}
+          </Table.Td>
+          <Table.Td pl="1.5rem">{useIcon(element.category)}</Table.Td>
+          <Table.Td miw="6rem">{element.notes}</Table.Td>
+        </Table.Tr>
+      ))
+    );
 
   const monthRows = dataTxMonth?.data.map((item: GetTransactionData) => (
     <Table.Tr key={item.id}>
