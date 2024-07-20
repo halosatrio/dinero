@@ -112,10 +112,15 @@ function IndexPage() {
         <LoadingOverlay visible={isLoading || isDataMonthLoading} />
 
         <div>
-          <Title order={3} ta="center" mt="xl">
+          <Center mb="xl">
+            <Button size="lg" w="20rem" onClick={open}>
+              New Transaction
+            </Button>
+          </Center>
+          <Title order={3} ta="center">
             {today.format("dddd, DD MMMM YYYY")}
           </Title>
-          <Paper mx="lg" mt="4rem" p="lg" shadow="md">
+          <Paper mx="lg" mt="md" p="lg" shadow="md">
             <Table>
               <Table.Thead>
                 <Table.Tr>
@@ -127,13 +132,11 @@ function IndexPage() {
               <Table.Tbody>{rows}</Table.Tbody>
             </Table>
           </Paper>
-          <Center mt="4rem">
-            <Button size="lg" w="20rem" onClick={open}>
-              New Transaction
-            </Button>
-          </Center>
 
-          <Paper mx="lg" mt="4rem" p="lg" shadow="md">
+          <Title order={3} ta="center" mt="3rem">
+            Transactions: {today.format("MMMM YYYY")}
+          </Title>
+          <Paper mx="lg" mt="md" p="lg" shadow="md">
             <Table>
               <Table.Thead>
                 <Table.Tr>
