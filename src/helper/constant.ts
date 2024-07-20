@@ -14,4 +14,6 @@ export const CATEGORY = [
   "date",
   "healthcare",
   "savings",
-];
+] as const;
+
+export type CategoryType = (typeof CATEGORY)[number];

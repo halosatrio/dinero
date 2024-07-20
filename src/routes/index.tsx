@@ -1,7 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import AppLayout from "../components/AppLayout";
 import dayjs from "dayjs";
-import NavigationBar from "../components/NavigationBar";
 import {
   Button,
   Center,
@@ -11,11 +9,17 @@ import {
   Table,
   Title,
 } from "@mantine/core";
-import { useIcon } from "../helper/useIcon";
-import ModalNewTransaction from "../components/ModalNewTransactions";
+import { useIcon } from "@/helper/useIcon";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import ModalNewTransaction from "@/components/ModalNewTransactions";
+import {
+  getTransaction,
+  type GetTransactionResponse,
+  type GetTransactionData,
+} from "@/api/endpoints/get-transaction";
+import AppLayout from "@/components/AppLayout";
+import NavigationBar from "@/components/NavigationBar";
 
 export const Route = createFileRoute("/")({
   component: IndexPage,
@@ -26,55 +30,18 @@ function IndexPage() {
 
   const today = dayjs();
 
-  const {
-    data: dataTx,
-    isLoading,
-    isSuccess,
-    status,
-  } = useQuery({
+  const { data: dataTx, isLoading } = useQuery<GetTransactionResponse>({
     queryKey: ["get-transaction"],
-    queryFn: async (): Promise<any> => {
-      await axios
-        .get(`${import.meta.env.VITE_API_URL}/transaction`, {
-          params: {
-            date_start: today.startOf("month").format("YYYY-MM-DD"),
-            date_end: today.endOf("month").format("YYYY-MM-DD"),
-          },
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
-          },
-        })
-        .then((res) => res.data.data);
-    },
+    queryFn: () =>
+      getTransaction({
+        headers: {
+          Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+        },
+      }),
+    retry: false,
   });
-  const data = [
-    {
-      id: 4,
-      user_id: 1,
-      type: "outflow",
-      amount: 14000,
-      category: "makan",
-      date: "2024-06-27",
-      note: "ketoprak",
-      is_active: true,
-      created_at: "2024-06-26T17:20:48.090Z",
-      updated_at: "2024-06-26T17:20:48.090Z",
-    },
-    {
-      id: 3,
-      user_id: 1,
-      type: "outflow",
-      amount: 20000,
-      category: "makan",
-      date: "2024-06-27",
-      note: "hejo",
-      is_active: true,
-      created_at: "2024-06-26T17:20:27.973Z",
-      updated_at: "2024-06-27T02:14:49.762Z",
-    },
-  ];
 
-  const rows = data.map((element: any) => (
+  const rows = dataTx?.data.map((element: GetTransactionData) => (
     <Table.Tr key={element.id}>
       <Table.Td>
         {new Intl.NumberFormat("id-ID", {
@@ -83,7 +50,7 @@ function IndexPage() {
         }).format(element.amount)}
       </Table.Td>
       <Table.Td pl="1.5rem">{useIcon(element.category)}</Table.Td>
-      <Table.Td miw="6rem">{element.note}</Table.Td>
+      <Table.Td miw="6rem">{element.notes}</Table.Td>
     </Table.Tr>
   ));
 

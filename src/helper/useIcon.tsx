@@ -15,8 +15,9 @@ import {
   IconToolsKitchen2,
   IconWallet,
 } from "@tabler/icons-react";
+import { CategoryType } from "@/helper/constant";
 
-export function useIcon(category: string): React.ReactNode {
+export function useIcon(category: CategoryType): React.ReactNode {
   switch (category) {
     case "income":
       return <IconCoinFilled />;
@@ -46,7 +47,7 @@ export function useIcon(category: string): React.ReactNode {
       return <IconHeartHandshake />;
     case "healthcare":
       return <IconFirstAidKit />;
-    case "saving":
+    case "savings":
       return <IconWallet />;
     default:
       break;
