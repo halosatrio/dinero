@@ -6,7 +6,6 @@ import {
   Center,
   LoadingOverlay,
   Paper,
-  Stack,
   Table,
   Text,
   Title,
@@ -20,9 +19,9 @@ import {
   type GetTransactionResponse,
   type GetTransactionData,
 } from "@/api/endpoints/get-transaction";
-// import AppLayout from "@/components/AppLayout";
 import NavigationBar from "@/components/NavigationBar";
 import { IconDatabaseOff } from "@tabler/icons-react";
+// import AppLayout from "@/components/AppLayout";
 
 export const Route = createFileRoute("/")({
   component: IndexPage,
@@ -116,47 +115,43 @@ function IndexPage() {
     <AppShell pt="lg">
       <AppShell.Main pb="5rem">
         <LoadingOverlay visible={isLoading || isDataMonthLoading} />
-        <Stack>
-          <div>
-            <Center mb="xl">
-              <Button size="lg" w="20rem" onClick={open}>
-                New Transaction
-              </Button>
-            </Center>
-            <Title order={3} ta="center">
-              {today.format("dddd, DD MMMM YYYY")}
-            </Title>
-            <Paper mx="lg" mt="md" p="lg" shadow="md">
-              <Table>
-                <Table.Thead>
-                  <Table.Tr>
-                    <Table.Th>Amount</Table.Th>
-                    <Table.Th>Category</Table.Th>
-                    <Table.Th>Notes</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>{rows}</Table.Tbody>
-              </Table>
-            </Paper>
+        <Center mb="xl">
+          <Button size="lg" w="20rem" onClick={open}>
+            New Transaction
+          </Button>
+        </Center>
+        <Title order={3} ta="center">
+          {today.format("dddd, DD MMMM YYYY")}
+        </Title>
+        <Paper mx="lg" mt="md" p="lg" shadow="md">
+          <Table>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Amount</Table.Th>
+                <Table.Th>Category</Table.Th>
+                <Table.Th>Notes</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{rows}</Table.Tbody>
+          </Table>
+        </Paper>
 
-            <Title order={3} ta="center" mt="3rem">
-              Transactions: {today.format("MMMM YYYY")}
-            </Title>
-            <Paper mx="sm" mt="md" p="xs" shadow="md">
-              <Table>
-                <Table.Thead>
-                  <Table.Tr>
-                    <Table.Th>Date</Table.Th>
-                    <Table.Th>Amount</Table.Th>
-                    <Table.Th>Category</Table.Th>
-                    <Table.Th>Notes</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>{monthRows}</Table.Tbody>
-              </Table>
-            </Paper>
-          </div>
-        </Stack>
+        <Title order={3} ta="center" mt="3rem">
+          Transactions: {today.format("MMMM YYYY")}
+        </Title>
+        <Paper mx="sm" mt="md" p="xs" shadow="md">
+          <Table>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Date</Table.Th>
+                <Table.Th>Amount</Table.Th>
+                <Table.Th>Category</Table.Th>
+                <Table.Th>Notes</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{monthRows}</Table.Tbody>
+          </Table>
+        </Paper>
       </AppShell.Main>
       <AppShell.Footer>
         <NavigationBar />
