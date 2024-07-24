@@ -33,7 +33,7 @@ function IndexPage() {
   const today = dayjs();
 
   const { data: dataTx, isLoading } = useQuery<GetTransactionResponse>({
-    queryKey: ["get-transaction-month"],
+    queryKey: ["get-transaction-today"],
     queryFn: () =>
       getTransaction({
         params: {
@@ -47,21 +47,24 @@ function IndexPage() {
     retry: false,
   });
 
-  const { data: dataTxMonth, isLoading: isDataMonthLoading } =
-    useQuery<GetTransactionResponse>({
-      queryKey: ["get-transaction-all"],
-      queryFn: () =>
-        getTransaction({
-          params: {
-            date_start: today.startOf("month").format("YYYY-MM-DD"),
-            date_end: today.endOf("month").format("YYYY-MM-DD"),
-          },
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
-          },
-        }),
-      retry: false,
-    });
+  const {
+    data: dataTxMonth,
+    isLoading: isDataMonthLoading,
+    refetch: refetchMonthlyTx,
+  } = useQuery<GetTransactionResponse>({
+    queryKey: ["get-transaction-month"],
+    queryFn: () =>
+      getTransaction({
+        params: {
+          date_start: today.startOf("month").format("YYYY-MM-DD"),
+          date_end: today.endOf("month").format("YYYY-MM-DD"),
+        },
+        headers: {
+          Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+        },
+      }),
+    retry: false,
+  });
 
   // handle no item rows
   const rows =
@@ -157,7 +160,11 @@ function IndexPage() {
         <NavigationBar />
       </AppShell.Footer>
       {/* Modal */}
-      <ModalNewTransaction open={opened} close={close} />
+      <ModalNewTransaction
+        open={opened}
+        close={close}
+        refetch={refetchMonthlyTx}
+      />
     </AppShell>
   );
 }

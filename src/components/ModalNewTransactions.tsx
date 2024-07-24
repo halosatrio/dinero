@@ -18,21 +18,39 @@ import { notifications } from "@mantine/notifications";
 type ModalNewTransactionProps = {
   open: boolean;
   close: () => void;
+  refetch: () => void;
 };
 
 type NewTransactionSchema = {
+  date: string | Date;
   type: "inflow" | "outflow";
   amount: number;
   category: string;
+  notes: string;
+};
+
+type FormSchema = {
   date: string | Date;
+  type: "inflow" | "outflow";
+  amount: number | undefined;
+  category: string | undefined;
   notes: string;
 };
 
 export default function ModalNewTransaction({
   open,
   close,
+  refetch,
 }: ModalNewTransactionProps) {
-  const form = useForm<NewTransactionSchema>();
+  const form = useForm<FormSchema>({
+    initialValues: {
+      date: new Date(),
+      type: "outflow",
+      amount: undefined,
+      category: undefined,
+      notes: "",
+    },
+  });
 
   const { mutate } = useMutation({
     mutationFn: async (bodyReq: NewTransactionSchema) => {
@@ -61,18 +79,27 @@ export default function ModalNewTransaction({
       });
     },
     onSuccess: () => {
+      refetch();
       close();
       form.reset();
     },
   });
-  function handleSubmit(values: any) {
-    mutate({
-      type: values.type,
-      amount: values.amount,
-      category: values.category,
-      date: dayjs(values.date).format("YYYY-MM-DD"),
-      notes: values.notes,
-    });
+  function handleSubmit(values: FormSchema) {
+    if (values.amount === undefined || values.category === undefined) {
+      notifications.show({
+        color: "red",
+        title: "Data Incomplete!",
+        message: "Please complete the input data",
+      });
+    } else {
+      mutate({
+        date: dayjs(values.date).format("YYYY-MM-DD"),
+        type: values.type,
+        amount: values.amount,
+        category: values.category,
+        notes: values.notes,
+      });
+    }
   }
 
   return (
@@ -90,14 +117,12 @@ export default function ModalNewTransaction({
             label="Select Date"
             valueFormat="DD MMM YYYY"
             leftSection={<IconCalendar />}
-            defaultValue={new Date()}
             {...form.getInputProps("date")}
           />
           <Select
             required
             label="Cash In/Out"
             data={["outflow", "inflow"]}
-            defaultValue={"outflow"}
             placeholder="Cash In / Cash Out"
             {...form.getInputProps("type")}
           />
@@ -116,6 +141,7 @@ export default function ModalNewTransaction({
             label="Category"
             data={CATEGORY}
             placeholder="pilih kategori"
+            searchable
             {...form.getInputProps("category")}
           />
           <TextInput
