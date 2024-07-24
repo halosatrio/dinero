@@ -8,6 +8,7 @@ import {
   Group,
   LoadingOverlay,
   Paper,
+  Select,
   Table,
   Text,
   Title,
@@ -27,6 +28,7 @@ import {
   GetMonthlySummaryData,
   GetMonthlySummaryResponse,
 } from "@/api/endpoints/get-tx-monthly-summary";
+import { CATEGORY } from "@/helper/constant";
 
 export const Route = createFileRoute("/transactions")({
   component: TransactionsPage,
@@ -34,14 +36,20 @@ export const Route = createFileRoute("/transactions")({
 
 function TransactionsPage() {
   const [date, setDate] = useState<Date | null>(new Date());
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    "Semua"
+  );
+
   const { data: dataTxMonth, isLoading: isDataMonthLoading } =
     useQuery<GetTransactionResponse>({
-      queryKey: ["get-transaction-all", date],
+      queryKey: ["get-transaction-all", date, selectedCategory],
       queryFn: () =>
         getTransaction({
           params: {
             date_start: dayjs(date).startOf("month").format("YYYY-MM-DD"),
             date_end: dayjs(date).endOf("month").format("YYYY-MM-DD"),
+            category:
+              selectedCategory === "Semua" ? undefined : selectedCategory,
           },
           headers: {
             Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
@@ -137,8 +145,20 @@ function TransactionsPage() {
           </Table>
         </Paper>
 
+        <Center>
+          <Box w="10rem">
+            <Select
+              label="Category"
+              data={["Semua", ...CATEGORY]}
+              placeholder="pilih kategori"
+              onChange={setSelectedCategory}
+              value={selectedCategory}
+            />
+          </Box>
+        </Center>
+
         {/* REGION: Monthly Transaction */}
-        <Paper p="xs" shadow="md">
+        <Paper p="xs" shadow="md" mt="lg">
           <Table>
             <Table.Thead>
               <Table.Tr>
