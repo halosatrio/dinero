@@ -5,9 +5,11 @@ import {
   AppShell,
   Box,
   Center,
+  Group,
   LoadingOverlay,
   Paper,
   Table,
+  Text,
   Title,
 } from "@mantine/core";
 import dayjs from "dayjs";
@@ -20,6 +22,11 @@ import {
 import { useIcon } from "@/helper/useIcon";
 import { MonthPickerInput } from "@mantine/dates";
 import { useState } from "react";
+import {
+  getMonthlySummary,
+  GetMonthlySummaryData,
+  GetMonthlySummaryResponse,
+} from "@/api/endpoints/get-tx-monthly-summary";
 
 export const Route = createFileRoute("/transactions")({
   component: TransactionsPage,
@@ -32,6 +39,22 @@ function TransactionsPage() {
       queryKey: ["get-transaction-all", date],
       queryFn: () =>
         getTransaction({
+          params: {
+            date_start: dayjs(date).startOf("month").format("YYYY-MM-DD"),
+            date_end: dayjs(date).endOf("month").format("YYYY-MM-DD"),
+          },
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+          },
+        }),
+      retry: false,
+    });
+
+  const { data: dataMonthlySummary, isLoading: isMonthlySummaryLoading } =
+    useQuery<GetMonthlySummaryResponse>({
+      queryKey: ["get-monthly-summary", date],
+      queryFn: () =>
+        getMonthlySummary({
           params: {
             date_start: dayjs(date).startOf("month").format("YYYY-MM-DD"),
             date_end: dayjs(date).endOf("month").format("YYYY-MM-DD"),
@@ -62,10 +85,32 @@ function TransactionsPage() {
     </Table.Tr>
   ));
 
+  const summaryRows = dataMonthlySummary?.data.map(
+    (item: GetMonthlySummaryData) => (
+      <Table.Tr key={item.category}>
+        <Table.Td>
+          <Group>
+            {useIcon(item.category)}
+            <Text ml="md">{item.category}</Text>
+          </Group>
+        </Table.Td>
+        <Table.Td>
+          {new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0,
+          }).format(item.total_amount)}
+        </Table.Td>
+      </Table.Tr>
+    )
+  );
+
   return (
     <AppShell pt="lg">
       <AppShell.Main pb="5rem" px="sm">
-        <LoadingOverlay visible={isDataMonthLoading} />
+        <LoadingOverlay
+          visible={isDataMonthLoading || isMonthlySummaryLoading}
+        />
         <Title order={3} ta="center" mb="xl">
           MONTHLY TRANSACTIONS
         </Title>
@@ -79,7 +124,21 @@ function TransactionsPage() {
             />
           </Box>
         </Center>
-        <Paper mt="md" p="xs" shadow="md">
+        {/* REGION: Transaction Monthly Summary */}
+        <Paper mt="md" p="xl" shadow="md" mb="4rem">
+          <Table>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Category</Table.Th>
+                <Table.Th>Total Amount</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{summaryRows}</Table.Tbody>
+          </Table>
+        </Paper>
+
+        {/* REGION: Monthly Transaction */}
+        <Paper p="xs" shadow="md">
           <Table>
             <Table.Thead>
               <Table.Tr>

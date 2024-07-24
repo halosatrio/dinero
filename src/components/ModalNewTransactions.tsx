@@ -40,7 +40,7 @@ type FormSchema = {
 export default function ModalNewTransaction({
   open,
   close,
-  refetch,
+  // refetch,
 }: ModalNewTransactionProps) {
   const form = useForm<FormSchema>({
     initialValues: {
@@ -79,7 +79,7 @@ export default function ModalNewTransaction({
       });
     },
     onSuccess: () => {
-      refetch();
+      // refetch();
       close();
       form.reset();
     },
