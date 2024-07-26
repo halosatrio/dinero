@@ -12,10 +12,19 @@ export const getMonthlySummary = (config: ApiRequestConfig) =>
 export type GetMonthlySummaryResponse = {
   status: number;
   message: string;
-  data: GetMonthlySummaryData[];
+  data: {
+    cashflow: MonthlyCashflowData;
+    summary: MonthlySummaryData[];
+  };
 };
 
-export type GetMonthlySummaryData = {
+export type MonthlySummaryData = {
   total_amount: number;
   category: CategoryType;
+  count: number;
+};
+
+export type MonthlyCashflowData = {
+  inflow: number;
+  outflow: number;
 };

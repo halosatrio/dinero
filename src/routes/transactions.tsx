@@ -25,8 +25,8 @@ import { MonthPickerInput } from "@mantine/dates";
 import { useState } from "react";
 import {
   getMonthlySummary,
-  GetMonthlySummaryData,
   GetMonthlySummaryResponse,
+  MonthlySummaryData,
 } from "@/api/endpoints/get-tx-monthly-summary";
 import { CATEGORY } from "@/helper/constant";
 
@@ -93,13 +93,13 @@ function TransactionsPage() {
     </Table.Tr>
   ));
 
-  const summaryRows = dataMonthlySummary?.data.map(
-    (item: GetMonthlySummaryData) => (
+  const summaryRows = dataMonthlySummary?.data?.summary.map(
+    (item: MonthlySummaryData) => (
       <Table.Tr key={item.category}>
         <Table.Td>
           <Group>
             {useIcon(item.category)}
-            <Text ml="md">{item.category}</Text>
+            <Text ml="sm">{item.category}</Text>
           </Group>
         </Table.Td>
         <Table.Td>
@@ -109,9 +109,41 @@ function TransactionsPage() {
             minimumFractionDigits: 0,
           }).format(item.total_amount)}
         </Table.Td>
+        <Table.Td>{item.count}</Table.Td>
       </Table.Tr>
     )
   );
+
+  const cashflowRows = dataMonthlySummary?.data?.cashflow ? (
+    <Table.Tr>
+      <Table.Td>
+        {new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+          minimumFractionDigits: 0,
+        }).format(dataMonthlySummary?.data?.cashflow.outflow)}
+      </Table.Td>
+      <Table.Td>
+        {new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+          minimumFractionDigits: 0,
+        }).format(dataMonthlySummary?.data?.cashflow.inflow)}
+      </Table.Td>
+      {new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(
+        dataMonthlySummary?.data?.cashflow.inflow -
+          dataMonthlySummary?.data?.cashflow.outflow
+      )}
+    </Table.Tr>
+  ) : (
+    <Table.Tr></Table.Tr>
+  );
+
+  console.log(dataMonthlySummary?.data?.cashflow.inflow);
 
   return (
     <AppShell pt="lg">
@@ -133,15 +165,30 @@ function TransactionsPage() {
           </Box>
         </Center>
         {/* REGION: Transaction Monthly Summary */}
-        <Paper mt="md" p="xl" shadow="md" mb="4rem">
+        <Paper mt="md" p="xl" shadow="md">
           <Table>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>Category</Table.Th>
                 <Table.Th>Total Amount</Table.Th>
+                <Table.Th>Count</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>{summaryRows}</Table.Tbody>
+          </Table>
+        </Paper>
+
+        {/* REGION: Cashflow Balance */}
+        <Paper mt="lg" p="xl" shadow="md" mb="4rem">
+          <Table>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Pengeluaran</Table.Th>
+                <Table.Th>Pemasukan</Table.Th>
+                <Table.Th>Selisih</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{cashflowRows}</Table.Tbody>
           </Table>
         </Paper>
 
