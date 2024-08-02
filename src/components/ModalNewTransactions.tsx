@@ -14,6 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import dayjs from "dayjs";
 import { notifications } from "@mantine/notifications";
+import { TransactionFormData } from "@/routes";
 
 type ModalNewTransactionProps = {
   open: boolean;
@@ -29,20 +30,12 @@ type NewTransactionSchema = {
   notes: string;
 };
 
-type FormSchema = {
-  date: string | Date;
-  type: "inflow" | "outflow";
-  amount: number | undefined;
-  category: string | undefined;
-  notes: string;
-};
-
 export default function ModalNewTransaction({
   open,
   close,
   // refetch,
 }: ModalNewTransactionProps) {
-  const form = useForm<FormSchema>({
+  const form = useForm<TransactionFormData>({
     initialValues: {
       date: new Date(),
       type: "outflow",
@@ -84,7 +77,7 @@ export default function ModalNewTransaction({
       form.reset();
     },
   });
-  function handleSubmit(values: FormSchema) {
+  function handleSubmit(values: TransactionFormData) {
     if (values.amount === undefined || values.category === undefined) {
       notifications.show({
         color: "red",
