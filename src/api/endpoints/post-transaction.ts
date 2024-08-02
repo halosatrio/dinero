@@ -4,21 +4,25 @@ import { type CategoryType } from "@/helper/constant";
 import axiosInstance from "@/api/endpoints/instance";
 
 export const postCreateTransaction = (
-  bodyPayload: PostTransactionPayload,
+  bodyPayload: PostCreateTransactionPayload,
   config: ApiRequestConfig
 ) =>
   api(axiosInstance)
-    .post<PostTransactionResponse>(`/transaction/create`, bodyPayload, config)
+    .post<PostCreateTransactionResponse>(
+      `/transaction/create`,
+      bodyPayload,
+      config
+    )
     .then((res) => res.data);
 
 // types response
-export type PostTransactionResponse = {
+export type PostCreateTransactionResponse = {
   status: number;
   message: string;
-  data: PostTransactionData;
+  data: PostCreateTransactionData;
 };
 
-export type PostTransactionPayload = {
+export type PostCreateTransactionPayload = {
   date: string | Date;
   type: "inflow" | "outflow";
   amount: number;
@@ -26,7 +30,7 @@ export type PostTransactionPayload = {
   notes: string;
 };
 
-export type PostTransactionData = {
+export type PostCreateTransactionData = {
   id: number;
   user_id: number;
   type: "outflow" | "inflow";

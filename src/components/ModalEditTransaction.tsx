@@ -1,43 +1,37 @@
+import { deleteTransaction } from "@/api/endpoints/delete-transaction";
+import { GetTransactionData } from "@/api/endpoints/get-transaction";
+import { CATEGORY } from "@/helper/constant";
 import {
   Button,
+  Group,
   Modal,
   NumberInput,
   Select,
   Stack,
   TextInput,
 } from "@mantine/core";
-import { CATEGORY } from "../helper/constant";
-import { IconCalendar } from "@tabler/icons-react";
 import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import { useMutation } from "@tanstack/react-query";
-import dayjs from "dayjs";
 import { notifications } from "@mantine/notifications";
-import {
-  postCreateTransaction,
-  PostCreateTransactionPayload,
-} from "@/api/endpoints/post-transaction";
+import { IconCalendar } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { TransactionFormData } from "./ModalNewTransactions";
 
-type ModalNewTransactionProps = {
+type ModalEditProps = {
   open: boolean;
   close: () => void;
-  refetch: () => void;
+  rowData: GetTransactionData | undefined;
 };
 
-export type TransactionFormData = {
-  date: string | Date;
-  type: "inflow" | "outflow";
-  amount: number | undefined;
-  category: string | undefined;
-  notes: string;
-};
-
-export default function ModalNewTransaction({
+export default function ModalEditTransaction({
   open,
   close,
-  // refetch,
-}: ModalNewTransactionProps) {
+  rowData,
+}: ModalEditProps) {
+  const [isEdit, setIsEdit] = useState(false);
   const form = useForm<TransactionFormData>({
+    mode: "uncontrolled",
     initialValues: {
       date: new Date(),
       type: "outflow",
@@ -48,13 +42,12 @@ export default function ModalNewTransaction({
   });
 
   const { mutate } = useMutation({
-    mutationFn: async (bodyReq: PostCreateTransactionPayload) => {
-      postCreateTransaction(bodyReq, {
+    mutationFn: async (transactionId: number) =>
+      deleteTransaction(transactionId, {
         headers: {
           Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
         },
-      });
-    },
+      }),
     onError: (err) => {
       let error = JSON.parse(err.message);
       notifications.show({
@@ -69,35 +62,48 @@ export default function ModalNewTransaction({
       form.reset();
     },
   });
+
   function handleSubmit(values: TransactionFormData) {
-    if (values.amount === undefined || values.category === undefined) {
-      notifications.show({
-        color: "red",
-        title: "Data Incomplete!",
-        message: "Please complete the input data",
-      });
+    console.log("submit", values);
+  }
+
+  function handleCancelDelete() {
+    // isEdit = true -> button cancel
+    if (isEdit) {
+      setIsEdit(false);
     } else {
-      mutate({
-        date: dayjs(values.date).format("YYYY-MM-DD"),
-        type: values.type,
-        amount: values.amount,
-        category: values.category,
-        notes: values.notes,
-      });
+      // trigger mutate
+      mutate(rowData?.id ?? 0);
     }
   }
+  // deleteTransaction
+
+  useEffect(() => {
+    if (rowData) {
+      // Even if query.data changes, form will be initialized only once
+      console.log("masuk sini");
+      form.initialize({
+        date: rowData.date,
+        type: rowData.type,
+        amount: rowData.amount,
+        category: rowData.category,
+        notes: rowData.notes,
+      });
+    }
+  }, [rowData]);
 
   return (
     <Modal
       opened={open}
       onClose={close}
-      title="New Transaction"
+      title="Edit Transaction"
       centered
       styles={{ title: { fontWeight: "bold" } }}
     >
       <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
         <Stack mt="sm" gap="lg">
           <DateInput
+            readOnly
             required
             label="Select Date"
             valueFormat="DD MMM YYYY"
@@ -135,10 +141,18 @@ export default function ModalNewTransaction({
             placeholder="keterangan"
             {...form.getInputProps("notes")}
           />
-          <Button mt="xl" size="lg" type="submit">
+          {/* <Button my="md" type="submit">
             Record Transaction
-          </Button>
+           </Button> */}
         </Stack>
+        <Group mt="lg" justify="flex-end">
+          <Button color={isEdit ? "gray" : "red"} onClick={handleCancelDelete}>
+            {isEdit ? "Cancel" : "Delete"}
+          </Button>
+          <Button onClick={() => setIsEdit(!isEdit)} type="submit">
+            {isEdit ? "Confirm" : "Edit"}
+          </Button>
+        </Group>
       </form>
     </Modal>
   );

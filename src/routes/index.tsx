@@ -4,21 +4,15 @@ import {
   AppShell,
   Button,
   Center,
-  Group,
   LoadingOverlay,
-  Modal,
-  NumberInput,
   Paper,
-  Select,
-  Stack,
   Table,
   Text,
-  TextInput,
   Title,
 } from "@mantine/core";
 import { useIcon } from "@/helper/useIcon";
 import { useDisclosure } from "@mantine/hooks";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import ModalNewTransaction from "@/components/ModalNewTransactions";
 import {
   getTransaction,
@@ -26,13 +20,9 @@ import {
   type GetTransactionData,
 } from "@/api/endpoints/get-transaction";
 import NavigationBar from "@/components/NavigationBar";
-import { IconCalendar, IconDatabaseOff } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
-import { DateInput } from "@mantine/dates";
-import { useForm } from "@mantine/form";
-import { CATEGORY } from "@/helper/constant";
-import { deleteTransaction } from "@/api/endpoints/delete-transaction";
-import { notifications } from "@mantine/notifications";
+import { IconDatabaseOff } from "@tabler/icons-react";
+import { useState } from "react";
+import ModalEditTransaction from "@/components/ModalEditTransaction";
 // import AppLayout from "@/components/AppLayout";
 
 export const Route = createFileRoute("/")({
@@ -193,149 +183,5 @@ function IndexPage() {
         rowData={rowData}
       />
     </AppShell>
-  );
-}
-
-type ModalEditProps = {
-  open: boolean;
-  close: () => void;
-  rowData: GetTransactionData | undefined;
-};
-
-export type TransactionFormData = {
-  date: string | Date;
-  type: "inflow" | "outflow";
-  amount: number | undefined;
-  category: string | undefined;
-  notes: string;
-};
-
-function ModalEditTransaction({ open, close, rowData }: ModalEditProps) {
-  const [isEdit, setIsEdit] = useState(false);
-  const form = useForm<TransactionFormData>({
-    mode: "uncontrolled",
-    initialValues: {
-      date: new Date(),
-      type: "outflow",
-      amount: undefined,
-      category: undefined,
-      notes: "",
-    },
-  });
-
-  const { mutate } = useMutation({
-    mutationFn: async (transactionId: number) =>
-      deleteTransaction(transactionId, {
-        headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
-        },
-      }),
-    onError: (err) => {
-      let error = JSON.parse(err.message);
-      notifications.show({
-        color: "red",
-        title: error.status,
-        message: error.message,
-      });
-    },
-    onSuccess: () => {
-      // refetch();
-      close();
-      form.reset();
-    },
-  });
-
-  function handleSubmit(values: TransactionFormData) {
-    console.log("submit", values);
-  }
-
-  function handleCancelDelete() {
-    // isEdit = true -> button cancel
-    if (isEdit) {
-      setIsEdit(false);
-    } else {
-      // trigger mutate
-      mutate(rowData?.id ?? 0);
-    }
-  }
-  // deleteTransaction
-
-  useEffect(() => {
-    if (rowData) {
-      // Even if query.data changes, form will be initialized only once
-      console.log("masuk sini");
-      form.initialize({
-        date: rowData.date,
-        type: rowData.type,
-        amount: rowData.amount,
-        category: rowData.category,
-        notes: rowData.notes,
-      });
-    }
-  }, [rowData]);
-
-  return (
-    <Modal
-      opened={open}
-      onClose={close}
-      title="Edit Transaction"
-      centered
-      styles={{ title: { fontWeight: "bold" } }}
-    >
-      <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-        <Stack mt="sm" gap="lg">
-          <DateInput
-            readOnly
-            required
-            label="Select Date"
-            valueFormat="DD MMM YYYY"
-            leftSection={<IconCalendar />}
-            {...form.getInputProps("date")}
-          />
-          <Select
-            required
-            label="Cash In/Out"
-            data={["outflow", "inflow"]}
-            placeholder="Cash In / Cash Out"
-            {...form.getInputProps("type")}
-          />
-          <NumberInput
-            required
-            label="Amount"
-            placeholder="masukkan nilai transaksi"
-            allowNegative={false}
-            thousandSeparator="."
-            decimalSeparator=","
-            leftSection="Rp"
-            {...form.getInputProps("amount")}
-          />
-          <Select
-            required
-            label="Category"
-            data={CATEGORY}
-            placeholder="pilih kategori"
-            searchable
-            {...form.getInputProps("category")}
-          />
-          <TextInput
-            required
-            label="Notes"
-            placeholder="keterangan"
-            {...form.getInputProps("notes")}
-          />
-          {/* <Button my="md" type="submit">
-            Record Transaction
-           </Button> */}
-        </Stack>
-        <Group mt="lg" justify="flex-end">
-          <Button color={isEdit ? "gray" : "red"} onClick={handleCancelDelete}>
-            {isEdit ? "Cancel" : "Delete"}
-          </Button>
-          <Button onClick={() => setIsEdit(!isEdit)} type="submit">
-            {isEdit ? "Confirm" : "Edit"}
-          </Button>
-        </Group>
-      </form>
-    </Modal>
   );
 }
