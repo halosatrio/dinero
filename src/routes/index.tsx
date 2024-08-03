@@ -35,6 +35,10 @@ function IndexPage() {
     useDisclosure();
   const [rowData, setRowData] = useState<GetTransactionData>();
 
+  function resetRowData() {
+    setRowData(undefined);
+  }
+
   const today = dayjs("2024-07-31");
 
   const { data: dataTx, isLoading } = useQuery<GetTransactionResponse>({
@@ -89,7 +93,6 @@ function IndexPage() {
         <Table.Tr
           key={element.id}
           onClick={() => {
-            console.log("hehe", element);
             setRowData(element);
             openModalEdit();
           }}
@@ -108,7 +111,14 @@ function IndexPage() {
     );
 
   const monthRows = dataTxMonth?.data.map((item: GetTransactionData) => (
-    <Table.Tr key={item.id}>
+    <Table.Tr
+      key={item.id}
+      onClick={() => {
+        console.log(item);
+        setRowData(item);
+        openModalEdit();
+      }}
+    >
       <Table.Td fz="xs">{dayjs(item.date).format("DD")}</Table.Td>
       <Table.Td fz="xs" align="right">
         {new Intl.NumberFormat("id-ID", {
@@ -181,6 +191,7 @@ function IndexPage() {
         open={modelEditOpened}
         close={closeModalEdit}
         rowData={rowData}
+        resetRow={resetRowData}
       />
     </AppShell>
   );

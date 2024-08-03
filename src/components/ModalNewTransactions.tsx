@@ -16,7 +16,7 @@ import { notifications } from "@mantine/notifications";
 import {
   postCreateTransaction,
   PostCreateTransactionPayload,
-} from "@/api/endpoints/post-transaction";
+} from "@/api/endpoints/post-create-transaction";
 
 type ModalNewTransactionProps = {
   open: boolean;
