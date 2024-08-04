@@ -38,7 +38,9 @@ export default function ModalEditTransaction({
   const [date, setDate] = useState<Date>();
 
   // Omit<TransactionFormData, "date">
-  const form = useForm<Omit<TransactionFormData, "date">>();
+  const form = useForm<TransactionFormData>({
+    mode: "uncontrolled",
+  });
 
   const { data } = useQuery<GetTransactionDetailResponse>({
     queryKey: ["get-transaction-month", rowId],
@@ -127,16 +129,21 @@ export default function ModalEditTransaction({
     if (data?.data) {
       // Even if query.data changes, form will be initialized only once
       console.log("masuk sini", data.data.date);
-      setDate(new Date(data.data.date));
-      form.initialize({
-        // date: data.data.date,
+      // setDate(new Date(data.data.date));
+      form.setValues({
+        date: new Date(data.data.date),
         type: data.data.type,
         amount: data.data.amount,
         category: data.data.category,
         notes: data.data.notes,
       });
-    } else {
-      console.log("masuk sanaa");
+      // form.initialize({
+      // date: data.data.date,
+      //   type: data.data.type,
+      //   amount: data.data.amount,
+      //   category: data.data.category,
+      //   notes: data.data.notes,
+      // });
     }
   }, [data?.data]);
 
@@ -157,9 +164,9 @@ export default function ModalEditTransaction({
             required
             label="Select Date"
             valueFormat="DD MMM YYYY"
-            value={date}
+            // value={date}
             leftSection={<IconCalendar />}
-            // {...form.getInputProps("date")}
+            {...form.getInputProps("date")}
           />
           <Select
             required
