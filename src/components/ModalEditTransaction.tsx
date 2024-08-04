@@ -37,9 +37,14 @@ export default function ModalEditTransaction({
   const [isEdit, setIsEdit] = useState(false);
   const [date, setDate] = useState<Date>();
 
-  // Omit<TransactionFormData, "date">
-  const form = useForm<TransactionFormData>({
-    mode: "uncontrolled",
+  const form = useForm<Omit<TransactionFormData, "date">>({
+    mode: "controlled",
+    initialValues: {
+      type: undefined,
+      amount: undefined,
+      category: undefined,
+      notes: "",
+    },
   });
 
   const { data } = useQuery<GetTransactionDetailResponse>({
@@ -54,30 +59,7 @@ export default function ModalEditTransaction({
     enabled: !!rowId,
   });
 
-  // const { mutate: triggerUpdate } = useMutation({
-  //   mutationFn: async (transactionId: number) =>
-  //     deleteTransaction(transactionId, {
-  //       headers: {
-  //         Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
-  //       },
-  //     }),
-  //   onError: (err) => {
-  //     let error = JSON.parse(err.message);
-  //     notifications.show({
-  //       color: "red",
-  //       title: error.status,
-  //       message: error.message,
-  //     });
-  //   },
-  //   onSuccess: () => {
-  //     // refetch();
-  //     close();
-  //     form.reset();
-  //   },
-  // });
-
-  // delete transaction by id
-  const { mutate: triggerDelete } = useMutation({
+  const { mutate: triggerUpdate } = useMutation({
     mutationFn: async (transactionId: number) =>
       deleteTransaction(transactionId, {
         headers: {
@@ -99,6 +81,28 @@ export default function ModalEditTransaction({
     },
   });
 
+  // delete transaction by id
+  const { mutate: triggerDelete } = useMutation({
+    mutationFn: async (transactionId: number) =>
+      deleteTransaction(transactionId, {
+        headers: {
+          Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+        },
+      }),
+    onError: (err) => {
+      let error = JSON.parse(err.message);
+      notifications.show({
+        color: "red",
+        title: error.status,
+        message: error.message,
+      });
+    },
+    onSuccess: () => {
+      close();
+      form.reset();
+    },
+  });
+
   function handleSubmit(values: Omit<TransactionFormData, "date">) {
     if (!isEdit) {
       setIsEdit(true);
@@ -114,7 +118,7 @@ export default function ModalEditTransaction({
       setIsEdit(false);
     } else {
       // trigger mutate
-      // triggerDelete(rowData?.id ?? 0);
+      triggerDelete(rowId!);
     }
   }
 
@@ -128,26 +132,17 @@ export default function ModalEditTransaction({
   useEffect(() => {
     if (data?.data) {
       // Even if query.data changes, form will be initialized only once
-      console.log("masuk sini", data.data.date);
-      // setDate(new Date(data.data.date));
+      // seperate date field because it wont update
+      // or even give error toISOString is not a function
+      setDate(new Date(data.data.date));
       form.setValues({
-        date: new Date(data.data.date),
         type: data.data.type,
         amount: data.data.amount,
         category: data.data.category,
         notes: data.data.notes,
       });
-      // form.initialize({
-      // date: data.data.date,
-      //   type: data.data.type,
-      //   amount: data.data.amount,
-      //   category: data.data.category,
-      //   notes: data.data.notes,
-      // });
     }
   }, [data?.data]);
-
-  // console.log("get values", { ...form.getInputProps("date") });
 
   return (
     <Modal
@@ -164,9 +159,8 @@ export default function ModalEditTransaction({
             required
             label="Select Date"
             valueFormat="DD MMM YYYY"
-            // value={date}
+            value={date}
             leftSection={<IconCalendar />}
-            {...form.getInputProps("date")}
           />
           <Select
             required

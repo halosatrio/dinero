@@ -26,7 +26,7 @@ type ModalNewTransactionProps = {
 
 export type TransactionFormData = {
   date: string | Date;
-  type: "inflow" | "outflow";
+  type: "inflow" | "outflow" | undefined;
   amount: number | undefined;
   category: string | undefined;
   notes: string;
@@ -70,7 +70,11 @@ export default function ModalNewTransaction({
     },
   });
   function handleSubmit(values: TransactionFormData) {
-    if (values.amount === undefined || values.category === undefined) {
+    if (
+      values.type === undefined ||
+      values.amount === undefined ||
+      values.category === undefined
+    ) {
       notifications.show({
         color: "red",
         title: "Data Incomplete!",

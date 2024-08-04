@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
 import {
   getTransaction,
-  GetTransactionData,
+  TransactionData,
   GetTransactionResponse,
 } from "@/api/endpoints/get-transaction";
 import { useIcon } from "@/helper/useIcon";
@@ -74,7 +74,7 @@ function TransactionsPage() {
       retry: false,
     });
 
-  const monthRows = dataTxMonth?.data.map((item: GetTransactionData) => (
+  const monthRows = dataTxMonth?.data.map((item: TransactionData) => (
     <Table.Tr key={item.id}>
       <Table.Td fz="xs">{dayjs(item.date).format("DD")}</Table.Td>
       <Table.Td fz="xs" align="right">
@@ -142,8 +142,6 @@ function TransactionsPage() {
   ) : (
     <Table.Tr></Table.Tr>
   );
-
-  console.log(dataMonthlySummary?.data?.cashflow.inflow);
 
   return (
     <AppShell pt="lg">
