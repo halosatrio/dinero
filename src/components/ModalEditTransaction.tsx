@@ -20,6 +20,11 @@ import {
   getTransactionDetail,
   GetTransactionDetailResponse,
 } from "@/api/endpoints/get-transaction-by-id";
+import {
+  putUpdateTransaction,
+  PutUpdateTransactionPayload,
+} from "@/api/endpoints/put-update-transaction";
+import dayjs from "dayjs";
 
 type ModalEditProps = {
   open: boolean;
@@ -60,8 +65,8 @@ export default function ModalEditTransaction({
   });
 
   const { mutate: triggerUpdate } = useMutation({
-    mutationFn: async (transactionId: number) =>
-      deleteTransaction(transactionId, {
+    mutationFn: async (body: PutUpdateTransactionPayload) =>
+      putUpdateTransaction(body.id, body, {
         headers: {
           Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
         },
@@ -107,8 +112,26 @@ export default function ModalEditTransaction({
     if (!isEdit) {
       setIsEdit(true);
     } else {
-      console.log("submit", values);
-      // triggerUpdate(values);
+      if (
+        values.type === undefined ||
+        values.amount === undefined ||
+        values.category === undefined
+      ) {
+        notifications.show({
+          color: "red",
+          title: "Data Incomplete!",
+          message: "Please complete the input data",
+        });
+      } else {
+        triggerUpdate({
+          type: values.type,
+          amount: values.amount,
+          category: values.category,
+          notes: values.notes,
+          id: rowId!,
+          date: dayjs(date).format("YYYY-MM-DD"),
+        });
+      }
     }
   }
 

@@ -114,7 +114,6 @@ function IndexPage() {
     <Table.Tr
       key={item.id}
       onClick={() => {
-        console.log(item);
         setRowId(item.id);
         openModalEdit();
       }}

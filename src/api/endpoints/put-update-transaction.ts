@@ -24,6 +24,7 @@ export type PutUpdateTransactionResponse = {
 };
 
 export type PutUpdateTransactionPayload = {
+  id: number;
   date: string | Date;
   type: "inflow" | "outflow";
   amount: number;
