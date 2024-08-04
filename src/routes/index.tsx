@@ -17,7 +17,7 @@ import ModalNewTransaction from "@/components/ModalNewTransactions";
 import {
   getTransaction,
   type GetTransactionResponse,
-  type GetTransactionData,
+  type TransactionData,
 } from "@/api/endpoints/get-transaction";
 import NavigationBar from "@/components/NavigationBar";
 import { IconDatabaseOff } from "@tabler/icons-react";
@@ -33,10 +33,10 @@ function IndexPage() {
   const [opened, { open, close }] = useDisclosure();
   const [modelEditOpened, { open: openModalEdit, close: closeModalEdit }] =
     useDisclosure();
-  const [rowData, setRowData] = useState<GetTransactionData>();
+  const [rowId, setRowId] = useState<number>();
 
-  function resetRowData() {
-    setRowData(undefined);
+  function resetRowId() {
+    setRowId(undefined);
   }
 
   const today = dayjs("2024-07-31");
@@ -89,11 +89,11 @@ function IndexPage() {
         </Table.Td>
       </Table.Tr>
     ) : (
-      dataTx?.data.map((element: GetTransactionData) => (
+      dataTx?.data.map((element: TransactionData) => (
         <Table.Tr
           key={element.id}
           onClick={() => {
-            setRowData(element);
+            setRowId(element.id);
             openModalEdit();
           }}
         >
@@ -110,12 +110,12 @@ function IndexPage() {
       ))
     );
 
-  const monthRows = dataTxMonth?.data.map((item: GetTransactionData) => (
+  const monthRows = dataTxMonth?.data.map((item: TransactionData) => (
     <Table.Tr
       key={item.id}
       onClick={() => {
         console.log(item);
-        setRowData(item);
+        setRowId(item.id);
         openModalEdit();
       }}
     >
@@ -190,8 +190,8 @@ function IndexPage() {
       <ModalEditTransaction
         open={modelEditOpened}
         close={closeModalEdit}
-        rowData={rowData}
-        resetRow={resetRowData}
+        rowId={rowId}
+        resetRow={resetRowId}
       />
     </AppShell>
   );

@@ -12,30 +12,45 @@ import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconCalendar } from "@tabler/icons-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { CATEGORY } from "@/helper/constant";
 import { deleteTransaction } from "@/api/endpoints/delete-transaction";
-import { GetTransactionData } from "@/api/endpoints/get-transaction";
 import { TransactionFormData } from "./ModalNewTransactions";
+import {
+  getTransactionDetail,
+  GetTransactionDetailResponse,
+} from "@/api/endpoints/get-transaction-by-id";
 
 type ModalEditProps = {
   open: boolean;
   close: () => void;
-  rowData: GetTransactionData | undefined;
+  rowId: number | undefined;
   resetRow: () => void;
 };
 
 export default function ModalEditTransaction({
   open,
   close,
-  rowData,
+  rowId,
   resetRow,
 }: ModalEditProps) {
   const [isEdit, setIsEdit] = useState(false);
-  // const [date, setDate] = useState<Date>();
+  const [date, setDate] = useState<Date>();
 
   // Omit<TransactionFormData, "date">
-  const form = useForm<TransactionFormData>();
+  const form = useForm<Omit<TransactionFormData, "date">>();
+
+  const { data } = useQuery<GetTransactionDetailResponse>({
+    queryKey: ["get-transaction-month", rowId],
+    queryFn: () =>
+      getTransactionDetail(rowId!, {
+        headers: {
+          Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+        },
+      }),
+    retry: false,
+    enabled: !!rowId,
+  });
 
   // const { mutate: triggerUpdate } = useMutation({
   //   mutationFn: async (transactionId: number) =>
@@ -82,7 +97,7 @@ export default function ModalEditTransaction({
     },
   });
 
-  function handleSubmit(values: TransactionFormData) {
+  function handleSubmit(values: Omit<TransactionFormData, "date">) {
     if (!isEdit) {
       setIsEdit(true);
     } else {
@@ -109,22 +124,23 @@ export default function ModalEditTransaction({
   }
 
   useEffect(() => {
-    if (rowData) {
+    if (data?.data) {
       // Even if query.data changes, form will be initialized only once
-      // console.log("masuk sini", rowData.date);
-      // setDate(new Date(rowData.date));
+      console.log("masuk sini", data.data.date);
+      setDate(new Date(data.data.date));
       form.initialize({
-        date: new Date(rowData.date),
-        type: rowData.type,
-        amount: rowData.amount,
-        category: rowData.category,
-        notes: rowData.notes,
+        // date: data.data.date,
+        type: data.data.type,
+        amount: data.data.amount,
+        category: data.data.category,
+        notes: data.data.notes,
       });
+    } else {
+      console.log("masuk sanaa");
     }
-  }, [rowData]);
+  }, [data?.data]);
 
-  console.log("get values", form.getValues());
-  console.log("rowData modal", rowData);
+  // console.log("get values", { ...form.getInputProps("date") });
 
   return (
     <Modal
@@ -141,9 +157,9 @@ export default function ModalEditTransaction({
             required
             label="Select Date"
             valueFormat="DD MMM YYYY"
-            // value={date}
+            value={date}
             leftSection={<IconCalendar />}
-            {...form.getInputProps("date")}
+            // {...form.getInputProps("date")}
           />
           <Select
             required

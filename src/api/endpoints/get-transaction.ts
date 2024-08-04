@@ -12,10 +12,10 @@ export const getTransaction = (config: ApiRequestConfig) =>
 export type GetTransactionResponse = {
   status: number;
   message: string;
-  data: GetTransactionData[];
+  data: TransactionData[];
 };
 
-export type GetTransactionData = {
+export type TransactionData = {
   id: number;
   user_id: number;
   type: "outflow" | "inflow";
