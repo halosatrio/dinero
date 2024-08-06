@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import AppLayout from "../components/AppLayout";
 import NavigationBar from "../components/NavigationBar";
+import { AppShell } from "@mantine/core";
 
 export const Route = createFileRoute("/reports")({
   component: ReportPage,
@@ -8,9 +8,13 @@ export const Route = createFileRoute("/reports")({
 
 function ReportPage() {
   return (
-    <AppLayout>
-      <div>Hello /report!</div>
-      <NavigationBar />
-    </AppLayout>
+    <AppShell>
+      <AppShell.Main>
+        <div>Hello /reports!</div>
+      </AppShell.Main>
+      <AppShell.Footer>
+        <NavigationBar />
+      </AppShell.Footer>
+    </AppShell>
   );
 }

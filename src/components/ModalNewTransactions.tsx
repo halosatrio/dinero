@@ -8,7 +8,7 @@ import {
 } from "@mantine/core";
 import { CATEGORY } from "../helper/constant";
 import { IconCalendar } from "@tabler/icons-react";
-import { DateInput } from "@mantine/dates";
+import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useMutation } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -101,7 +101,7 @@ export default function ModalNewTransaction({
     >
       <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
         <Stack mt="sm" gap="lg">
-          <DateInput
+          <DatePickerInput
             required
             label="Select Date"
             valueFormat="DD MMM YYYY"
@@ -130,7 +130,6 @@ export default function ModalNewTransaction({
             label="Category"
             data={CATEGORY}
             placeholder="pilih kategori"
-            searchable
             {...form.getInputProps("category")}
           />
           <TextInput

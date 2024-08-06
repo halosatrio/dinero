@@ -8,7 +8,7 @@ import {
   Stack,
   TextInput,
 } from "@mantine/core";
-import { DateInput } from "@mantine/dates";
+import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconCalendar } from "@tabler/icons-react";
@@ -177,7 +177,7 @@ export default function ModalEditTransaction({
     >
       <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
         <Stack mt="sm" gap="lg">
-          <DateInput
+          <DatePickerInput
             disabled
             required
             label="Select Date"
