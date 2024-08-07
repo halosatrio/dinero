@@ -1,4 +1,4 @@
-import { defineConfig, PluginOption } from "vite";
+import { defineConfig, loadEnv, PluginOption } from "vite";
 import react from "@vitejs/plugin-react";
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -12,4 +12,5 @@ export default defineConfig({
     tsconfigPaths(),
     visualizer() as PluginOption,
   ],
+  server: { port: parseInt(Bun.env.VITE_PORT!) || 8080 },
 });
