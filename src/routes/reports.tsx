@@ -53,6 +53,7 @@ const dummy_non_essentials = [
   { category: "Travelling", amount: [300000, 0, 0] },
   { category: "Date", amount: [223000, 162000, 50000] },
 ];
+const dummy_shopping = [488000, 703000, 1019000];
 
 function ReportPage() {
   const [value, setValue] = useState<string | null>("2024-3");
@@ -113,7 +114,9 @@ function ReportPage() {
   return (
     <AppShell pt="lg">
       <AppShell.Main pb="5rem" px="sm">
-        <LoadingOverlay visible={isLoading} />
+        <LoadingOverlay
+          visible={isLoading || loadingEssentials || loadingNonEssentials}
+        />
         <Title order={3} ta="center" mb="xl">
           TRANSACTION REPORTS
         </Title>
@@ -192,6 +195,35 @@ function ReportPage() {
                   ))}
                 </Table.Tr>
               ))}
+            </Table.Tbody>
+          </Table>
+        </Paper>
+
+        {/* REGION: Report Card Shopping */}
+        <Paper p="xs" shadow="md" mt="lg" withBorder>
+          <Center mb="md" fw="bold" fz="h3">
+            Shopping
+          </Center>
+          <Table>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>July</Table.Th>
+                <Table.Th>August</Table.Th>
+                <Table.Th>September</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              <Table.Tr>
+                {dummy_shopping.map((item, idx) => (
+                  <Table.Td key={idx}>
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                    }).format(item)}
+                  </Table.Td>
+                ))}
+              </Table.Tr>
             </Table.Tbody>
           </Table>
         </Paper>
