@@ -39,7 +39,7 @@ function IndexPage() {
     setRowId(undefined);
   }
 
-  const today = dayjs("2024-07-31");
+  const today = dayjs();
 
   const { data: dataTx, isLoading } = useQuery<GetTransactionResponse>({
     queryKey: ["get-transaction-today"],

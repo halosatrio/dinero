@@ -127,6 +127,7 @@ export default function ModalNewTransaction({
           />
           <Select
             required
+            searchable
             label="Category"
             data={CATEGORY}
             placeholder="pilih kategori"
