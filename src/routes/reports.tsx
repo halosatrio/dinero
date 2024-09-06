@@ -39,22 +39,6 @@ const PERIOD_DATA = [
 // const ESSENTIALS_ARRAY = ["Makan", "Cafe", "Errand", "Utils", "Bensin"]
 // const NON_ESSENTIALS_ARRAY = ["Misc", "Family", "Transport", "Travelling", "Date"]
 
-const dummy_essentials = [
-  { category: "Makan", amount: [1400500, 1322000, 1424000] },
-  { category: "Cafe", amount: [206000, 172000, 184000] },
-  { category: "Errand", amount: [353500, 407500, 331500] },
-  { category: "Utils", amount: [1943000, 1743000, 1732500] },
-  { category: "Bensin", amount: [120000, 160000, 160000] },
-];
-const dummy_non_essentials = [
-  { category: "Misc", amount: [435000, 145000, 8450000] },
-  { category: "Family", amount: [1307000, 300000, 500000] },
-  { category: "Transport", amount: [0, 0, 17000] },
-  { category: "Travelling", amount: [300000, 0, 0] },
-  { category: "Date", amount: [223000, 162000, 50000] },
-];
-const dummy_shopping = [488000, 703000, 1019000];
-
 function ReportPage() {
   const [value, setValue] = useState<string | null>("2024-3");
 
@@ -106,10 +90,27 @@ function ReportPage() {
       retry: false,
     });
 
-  console.log("dataQuarterEssentials", dataQuarterEssentials);
-  console.log("dataQuarterNonEssentials", dataQuarterNonEssentials);
-  console.log("dataQuarterShopping", dataQuarterShopping);
-  // console.log(value);
+  function transformData(data: any) {
+    const categories = [
+      ...new Set(
+        Object.values(data?.data).flatMap((month: any) =>
+          month.map((item: any) => item.category)
+        )
+      ),
+    ];
+
+    return categories.map((category) => {
+      const amount = Object.values(data.data).map((month: any) => {
+        const item = month.find((item: any) => item.category === category);
+        return item ? item.amount : 0;
+      });
+
+      return { category, amount };
+    });
+  }
+
+  const transformedEssentialsData = transformData(dataQuarterEssentials);
+  const transformedNonEssentialsData = transformData(dataQuarterNonEssentials);
 
   return (
     <AppShell pt="lg">
@@ -145,10 +146,11 @@ function ReportPage() {
                 <Table.Th>July</Table.Th>
                 <Table.Th>August</Table.Th>
                 <Table.Th>September</Table.Th>
+                <Table.Th>Total</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {dummy_essentials.map((item) => (
+              {transformedEssentialsData.map((item) => (
                 <Table.Tr key={item.category}>
                   <Table.Td fw={"bold"}>{item.category}</Table.Td>
                   {item.amount.map((item, idx) => (
@@ -181,7 +183,7 @@ function ReportPage() {
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {dummy_non_essentials.map((item) => (
+              {transformedNonEssentialsData.map((item) => (
                 <Table.Tr key={item.category}>
                   <Table.Td fw={"bold"}>{item.category}</Table.Td>
                   {item.amount.map((item, idx) => (
@@ -214,13 +216,13 @@ function ReportPage() {
             </Table.Thead>
             <Table.Tbody>
               <Table.Tr>
-                {dummy_shopping.map((item, idx) => (
+                {Object.values(dataQuarterShopping?.data).map((item, idx) => (
                   <Table.Td key={idx}>
                     {new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",
                       minimumFractionDigits: 0,
-                    }).format(item)}
+                    }).format(item as number)}
                   </Table.Td>
                 ))}
               </Table.Tr>

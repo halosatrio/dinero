@@ -16,5 +16,15 @@ export type QuarterEssentialsParams = {
 export type GetReportQuarterEssentialsRes = {
   status: number;
   message: string;
-  data: any;
+  data: {
+    quarterMonth1: QuarterEssentialsData[];
+    quarterMonth2: QuarterEssentialsData[];
+    quarterMonth3: QuarterEssentialsData[];
+    quarterTotal: QuarterEssentialsData[];
+  };
+};
+
+export type QuarterEssentialsData = {
+  category: "makan" | "errand" | "cafe" | "utils" | "bensin";
+  amount: number;
 };
