@@ -13,17 +13,12 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import {
   getReportQuarterEssentials,
-  GetReportQuarterEssentialsRes,
-} from "@/api/endpoints/get-report-quarter-essentials";
-import { useState } from "react";
-import {
   getReportQuarterNonEssentials,
-  type GetReportQuarterNonEssentialsRes,
-} from "@/api/endpoints/get-report-quarter-non-essentials";
-import {
   getReportQuarterShopping,
+  GetReportQuarterRes,
   GetReportQuarterShoppingRes,
-} from "@/api/endpoints/get-report-quarter-shopping";
+} from "@/api/endpoints/get-report-quarter";
+import { useState } from "react";
 import { useIcon } from "@/helper/useIcon";
 import { CategoryType } from "@/helper/constant";
 
@@ -42,7 +37,7 @@ function ReportPage() {
   const [value, setValue] = useState<string | null>("2024-3");
 
   const { data: dataQuarterEssentials, isLoading: loadingEssentials } =
-    useQuery<GetReportQuarterEssentialsRes>({
+    useQuery<GetReportQuarterRes>({
       queryKey: ["get-report-quarter-essentials", value],
       queryFn: () =>
         getReportQuarterEssentials({
@@ -59,7 +54,7 @@ function ReportPage() {
     });
 
   const { data: dataQuarterNonEssentials, isLoading: loadingNonEssentials } =
-    useQuery<GetReportQuarterNonEssentialsRes>({
+    useQuery<GetReportQuarterRes>({
       queryKey: ["get-report-quarter-non-essentials", value],
       queryFn: () =>
         getReportQuarterNonEssentials({
