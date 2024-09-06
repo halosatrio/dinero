@@ -1,6 +1,7 @@
 import { api, type ApiRequestConfig } from "@/api";
 
 import axiosInstance from "@/api/endpoints/instance";
+import { CategoryType } from "@/helper/constant";
 
 export const getReportQuarterEssentials = (config: ApiRequestConfig) =>
   api(axiosInstance)
@@ -16,15 +17,23 @@ export type QuarterEssentialsParams = {
 export type GetReportQuarterEssentialsRes = {
   status: number;
   message: string;
-  data: {
-    quarterMonth1: QuarterEssentialsData[];
-    quarterMonth2: QuarterEssentialsData[];
-    quarterMonth3: QuarterEssentialsData[];
-    quarterTotal: QuarterEssentialsData[];
-  };
+  data: Array<{
+    month1: {
+      category: CategoryType;
+      amount: number;
+    };
+    month2: {
+      category: CategoryType;
+      amount: number;
+    };
+    month3: {
+      category: CategoryType;
+      amount: number;
+    };
+  }>;
 };
 
-export type QuarterEssentialsData = {
-  category: "makan" | "errand" | "cafe" | "utils" | "bensin";
-  amount: number;
-};
+// export type QuarterEssentialsData = {
+//   category: "makan" | "errand" | "cafe" | "utils" | "bensin";
+//   amount: number;
+// };

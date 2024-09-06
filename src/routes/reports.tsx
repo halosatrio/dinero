@@ -24,6 +24,8 @@ import {
   getReportQuarterShopping,
   GetReportQuarterShoppingRes,
 } from "@/api/endpoints/get-report-quarter-shopping";
+import { useIcon } from "@/helper/useIcon";
+import { CategoryType } from "@/helper/constant";
 
 export const Route = createFileRoute("/reports")({
   component: ReportPage,
@@ -90,7 +92,9 @@ function ReportPage() {
       retry: false,
     });
 
-  function transformData(data: any) {
+  function transformData(
+    data: any
+  ): Array<{ category: CategoryType; amount: number[] }> {
     const categories = [
       ...new Set(
         Object.values(data?.data).flatMap((month: any) =>
@@ -109,8 +113,14 @@ function ReportPage() {
     });
   }
 
-  const transformedEssentialsData = transformData(dataQuarterEssentials);
-  const transformedNonEssentialsData = transformData(dataQuarterNonEssentials);
+  const transformedEssentialsData =
+    dataQuarterEssentials !== undefined
+      ? transformData(dataQuarterEssentials)
+      : undefined;
+  const transformedNonEssentialsData =
+    dataQuarterNonEssentials !== undefined
+      ? transformData(dataQuarterNonEssentials)
+      : undefined;
 
   return (
     <AppShell pt="lg">
@@ -150,9 +160,12 @@ function ReportPage() {
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {transformedEssentialsData.map((item) => (
+              {transformedEssentialsData?.map((item) => (
                 <Table.Tr key={item.category}>
-                  <Table.Td fw={"bold"}>{item.category}</Table.Td>
+                  {/* <Table.Td fw={"bold"}>{item.category}</Table.Td> */}
+                  <Table.Td fz="xs" pl="1.5rem">
+                    {useIcon(item.category)}
+                  </Table.Td>
                   {item.amount.map((item, idx) => (
                     <Table.Td key={idx}>
                       {new Intl.NumberFormat("id-ID", {
@@ -183,9 +196,12 @@ function ReportPage() {
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {transformedNonEssentialsData.map((item) => (
+              {transformedNonEssentialsData?.map((item) => (
                 <Table.Tr key={item.category}>
-                  <Table.Td fw={"bold"}>{item.category}</Table.Td>
+                  {/* <Table.Td fw={"bold"}>{item.category}</Table.Td> */}
+                  <Table.Td fz="xs" pl="1.5rem">
+                    {useIcon(item.category)}
+                  </Table.Td>
                   {item.amount.map((item, idx) => (
                     <Table.Td key={idx}>
                       {new Intl.NumberFormat("id-ID", {
@@ -214,19 +230,21 @@ function ReportPage() {
                 <Table.Th>September</Table.Th>
               </Table.Tr>
             </Table.Thead>
-            <Table.Tbody>
-              <Table.Tr>
-                {Object.values(dataQuarterShopping?.data).map((item, idx) => (
-                  <Table.Td key={idx}>
-                    {new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                      minimumFractionDigits: 0,
-                    }).format(item as number)}
-                  </Table.Td>
-                ))}
-              </Table.Tr>
-            </Table.Tbody>
+            {dataQuarterShopping !== undefined ? (
+              <Table.Tbody>
+                <Table.Tr>
+                  {Object.values(dataQuarterShopping?.data).map((item, idx) => (
+                    <Table.Td key={idx}>
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                        minimumFractionDigits: 0,
+                      }).format(item as number)}
+                    </Table.Td>
+                  ))}
+                </Table.Tr>
+              </Table.Tbody>
+            ) : null}
           </Table>
         </Paper>
       </AppShell.Main>
