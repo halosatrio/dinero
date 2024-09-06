@@ -145,8 +145,8 @@ function ReportPage() {
         </Center>
 
         {/* REGION: Report Card Essentials */}
-        <Paper p="xs" shadow="md" mt="lg" withBorder>
-          <Center mb="md" fw="bold" fz="h3">
+        <Paper shadow="md" mt="lg" pb="md" withBorder>
+          <Center my="md" fw="bold" fz="h3">
             Essentials
           </Center>
           <Table>
@@ -156,16 +156,13 @@ function ReportPage() {
                 <Table.Th>July</Table.Th>
                 <Table.Th>August</Table.Th>
                 <Table.Th>September</Table.Th>
-                <Table.Th>Total</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
               {transformedEssentialsData?.map((item) => (
                 <Table.Tr key={item.category}>
                   {/* <Table.Td fw={"bold"}>{item.category}</Table.Td> */}
-                  <Table.Td fz="xs" pl="1.5rem">
-                    {useIcon(item.category)}
-                  </Table.Td>
+                  <Table.Td fz="xs">{useIcon(item.category)}</Table.Td>
                   {item.amount.map((item, idx) => (
                     <Table.Td key={idx}>
                       {new Intl.NumberFormat("id-ID", {
@@ -182,8 +179,8 @@ function ReportPage() {
         </Paper>
 
         {/* REGION: Report Card Non-Essentials*/}
-        <Paper p="xs" shadow="md" mt="lg" withBorder>
-          <Center mb="md" fw="bold" fz="h3">
+        <Paper shadow="md" mt="lg" pb="md" withBorder>
+          <Center my="md" fw="bold" fz="h3">
             Non Essentials
           </Center>
           <Table>
@@ -199,9 +196,7 @@ function ReportPage() {
               {transformedNonEssentialsData?.map((item) => (
                 <Table.Tr key={item.category}>
                   {/* <Table.Td fw={"bold"}>{item.category}</Table.Td> */}
-                  <Table.Td fz="xs" pl="1.5rem">
-                    {useIcon(item.category)}
-                  </Table.Td>
+                  <Table.Td fz="xs">{useIcon(item.category)}</Table.Td>
                   {item.amount.map((item, idx) => (
                     <Table.Td key={idx}>
                       {new Intl.NumberFormat("id-ID", {
@@ -218,8 +213,8 @@ function ReportPage() {
         </Paper>
 
         {/* REGION: Report Card Shopping */}
-        <Paper p="xs" shadow="md" mt="lg" withBorder>
-          <Center mb="md" fw="bold" fz="h3">
+        <Paper shadow="md" mt="lg" pb="md" withBorder>
+          <Center my="md" fw="bold" fz="h3">
             Shopping
           </Center>
           <Table>
