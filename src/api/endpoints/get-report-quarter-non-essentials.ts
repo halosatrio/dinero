@@ -11,12 +11,6 @@ export const getReportQuarterNonEssentials = (config: ApiRequestConfig) =>
     )
     .then((res) => res.data);
 
-// data types params and response
-export type QuarterNonEssentialsParams = {
-  year: number;
-  q: 1 | 2 | 3 | 4;
-};
-
 export type GetReportQuarterNonEssentialsRes = {
   status: number;
   message: string;

@@ -18,7 +18,7 @@ import {
 import { useState } from "react";
 import {
   getReportQuarterNonEssentials,
-  GetReportQuarterNonEssentialsRes,
+  type GetReportQuarterNonEssentialsRes,
 } from "@/api/endpoints/get-report-quarter-non-essentials";
 import {
   getReportQuarterShopping,
@@ -38,58 +38,58 @@ const PERIOD_DATA = [
   { value: "2025-1", label: "Q1 2025" },
 ];
 
-// const ESSENTIALS_ARRAY = ["Makan", "Cafe", "Errand", "Utils", "Bensin"]
-// const NON_ESSENTIALS_ARRAY = ["Misc", "Family", "Transport", "Travelling", "Date"]
-
 function ReportPage() {
   const [value, setValue] = useState<string | null>("2024-3");
 
   const { data: dataQuarterEssentials, isLoading: loadingEssentials } =
     useQuery<GetReportQuarterEssentialsRes>({
-      queryKey: ["get-report-quarter-essentials"],
+      queryKey: ["get-report-quarter-essentials", value],
       queryFn: () =>
         getReportQuarterEssentials({
           params: {
-            year: 2024,
-            q: 3,
+            year: value?.split("-")[0],
+            q: value?.split("-")[1],
           },
           headers: {
             Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
           },
         }),
       retry: false,
+      enabled: typeof value === "string" && value?.split("-").length > 1,
     });
 
   const { data: dataQuarterNonEssentials, isLoading: loadingNonEssentials } =
     useQuery<GetReportQuarterNonEssentialsRes>({
-      queryKey: ["get-report-quarter-non-essentials"],
+      queryKey: ["get-report-quarter-non-essentials", value],
       queryFn: () =>
         getReportQuarterNonEssentials({
           params: {
-            year: 2024,
-            q: 3,
+            year: value?.split("-")[0],
+            q: value?.split("-")[1],
           },
           headers: {
             Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
           },
         }),
       retry: false,
+      enabled: typeof value === "string" && value?.split("-").length > 1,
     });
 
   const { data: dataQuarterShopping, isLoading } =
     useQuery<GetReportQuarterShoppingRes>({
-      queryKey: ["get-report-quarter-shopping"],
+      queryKey: ["get-report-quarter-shopping", value],
       queryFn: () =>
         getReportQuarterShopping({
           params: {
-            year: 2024,
-            q: 3,
+            year: value?.split("-")[0],
+            q: value?.split("-")[1],
           },
           headers: {
             Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
           },
         }),
       retry: false,
+      enabled: typeof value === "string" && value?.split("-").length > 1,
     });
 
   function transformData(
@@ -215,7 +215,7 @@ function ReportPage() {
         {/* REGION: Report Card Shopping */}
         <Paper shadow="md" mt="lg" pb="md" withBorder>
           <Center my="md" fw="bold" fz="h3">
-            Shopping
+            Belanja
           </Center>
           <Table>
             <Table.Thead>
