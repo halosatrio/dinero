@@ -53,6 +53,9 @@ function AssetPage() {
   // Sort dates
   const sortedDates = Object.keys(groupedData).sort();
 
+  // TODO:
+  // limit record, from the backend too
+
   return (
     <AppShell pt="lg">
       <AppShell.Main pb="5rem" px="sm">
