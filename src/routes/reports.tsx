@@ -326,7 +326,7 @@ function ReportPage() {
                         style: "currency",
                         currency: "IDR",
                         minimumFractionDigits: 0,
-                      }).format(dataAnnualCashflow?.data?.total?.total_inflow!)}
+                      }).format(dataAnnualCashflow?.data?.total?.total_inflow)}
                     </Table.Td>
                     <Table.Td>
                       {new Intl.NumberFormat("id-ID", {
@@ -342,7 +342,7 @@ function ReportPage() {
                         style: "currency",
                         currency: "IDR",
                         minimumFractionDigits: 0,
-                      }).format(dataAnnualCashflow?.data?.total?.total_saving!)}
+                      }).format(dataAnnualCashflow?.data?.total?.total_saving)}
                     </Table.Td>
                   </Table.Tr>
                 </Table.Tbody>
