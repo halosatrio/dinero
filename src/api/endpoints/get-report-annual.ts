@@ -19,6 +19,7 @@ export type GetReportAnnualCashflowRes = {
     total: {
       total_inflow: number;
       total_outflow: number;
+      total_saving: number;
     };
   };
 };

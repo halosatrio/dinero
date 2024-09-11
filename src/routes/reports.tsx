@@ -315,6 +315,36 @@ function ReportPage() {
                       </Table.Tr>
                     )
                   )}
+                  <Table.Tr>
+                    <Table.Th colSpan={3}>
+                      <Center fz="h5">Total Cashflow</Center>
+                    </Table.Th>
+                  </Table.Tr>
+                  <Table.Tr>
+                    <Table.Td>
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                        minimumFractionDigits: 0,
+                      }).format(dataAnnualCashflow?.data?.total?.total_inflow!)}
+                    </Table.Td>
+                    <Table.Td>
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                        minimumFractionDigits: 0,
+                      }).format(
+                        dataAnnualCashflow?.data?.total?.total_outflow!
+                      )}
+                    </Table.Td>
+                    <Table.Td>
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                        minimumFractionDigits: 0,
+                      }).format(dataAnnualCashflow?.data?.total?.total_saving!)}
+                    </Table.Td>
+                  </Table.Tr>
                 </Table.Tbody>
               ) : null}
             </Table>
