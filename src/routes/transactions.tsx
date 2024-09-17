@@ -29,12 +29,14 @@ import {
   MonthlySummaryData,
 } from "@/api/endpoints/get-tx-monthly-summary";
 import { CATEGORY } from "@/helper/constant";
+import { useCookies } from "react-cookie";
 
 export const Route = createFileRoute("/transactions")({
   component: TransactionsPage,
 });
 
 function TransactionsPage() {
+  const [cookies] = useCookies(["token"]);
   const [date, setDate] = useState<Date | null>(new Date());
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     "Semua"
@@ -52,7 +54,7 @@ function TransactionsPage() {
               selectedCategory === "Semua" ? undefined : selectedCategory,
           },
           headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+            Authorization: `Bearer ${cookies.token}`,
           },
         }),
       retry: false,
@@ -68,7 +70,7 @@ function TransactionsPage() {
             date_end: dayjs(date).endOf("month").format("YYYY-MM-DD"),
           },
           headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+            Authorization: `Bearer ${cookies.token}`,
           },
         }),
       retry: false,

@@ -17,6 +17,7 @@ import {
   postCreateTransaction,
   PostCreateTransactionPayload,
 } from "@/api/endpoints/post-create-transaction";
+import { useCookies } from "react-cookie";
 
 type ModalNewTransactionProps = {
   open: boolean;
@@ -37,6 +38,7 @@ export default function ModalNewTransaction({
   close,
   // refetch,
 }: ModalNewTransactionProps) {
+  const [cookies] = useCookies(["token"]);
   const form = useForm<TransactionFormData>({
     initialValues: {
       date: new Date(),
@@ -51,7 +53,7 @@ export default function ModalNewTransaction({
     mutationFn: async (bodyReq: PostCreateTransactionPayload) => {
       postCreateTransaction(bodyReq, {
         headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+          Authorization: `Bearer ${cookies.token}`,
         },
       });
     },
