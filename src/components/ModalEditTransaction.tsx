@@ -25,6 +25,7 @@ import {
   PutUpdateTransactionPayload,
 } from "@/api/endpoints/put-update-transaction";
 import dayjs from "dayjs";
+import { useCookies } from "react-cookie";
 
 type ModalEditProps = {
   open: boolean;
@@ -39,6 +40,7 @@ export default function ModalEditTransaction({
   rowId,
   resetRow,
 }: ModalEditProps) {
+  const [cookies] = useCookies(["token"]);
   const [isEdit, setIsEdit] = useState(false);
   const [date, setDate] = useState<Date>();
 
@@ -57,7 +59,7 @@ export default function ModalEditTransaction({
     queryFn: () =>
       getTransactionDetail(rowId!, {
         headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+          Authorization: `Bearer ${cookies.token}`,
         },
       }),
     retry: false,
@@ -68,7 +70,7 @@ export default function ModalEditTransaction({
     mutationFn: async (body: PutUpdateTransactionPayload) =>
       putUpdateTransaction(body.id, body, {
         headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+          Authorization: `Bearer ${cookies.token}`,
         },
       }),
     onError: (err) => {
@@ -91,7 +93,7 @@ export default function ModalEditTransaction({
     mutationFn: async (transactionId: number) =>
       deleteTransaction(transactionId, {
         headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+          Authorization: `Bearer ${cookies.token}`,
         },
       }),
     onError: (err) => {

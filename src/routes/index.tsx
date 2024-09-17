@@ -23,6 +23,7 @@ import NavigationBar from "@/components/NavigationBar";
 import { IconDatabaseOff } from "@tabler/icons-react";
 import { useState } from "react";
 import ModalEditTransaction from "@/components/ModalEditTransaction";
+import { useCookies } from "react-cookie";
 // import AppLayout from "@/components/AppLayout";
 
 export const Route = createFileRoute("/")({
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/")({
 
 function IndexPage() {
   const [opened, { open, close }] = useDisclosure();
+  const [cookies] = useCookies(["token"]);
   const [modelEditOpened, { open: openModalEdit, close: closeModalEdit }] =
     useDisclosure();
   const [rowId, setRowId] = useState<number>();
@@ -50,7 +52,7 @@ function IndexPage() {
           date_end: today.format("YYYY-MM-DD"),
         },
         headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+          Authorization: `Bearer ${cookies.token}`,
         },
       }),
     retry: false,
@@ -69,7 +71,7 @@ function IndexPage() {
           date_end: today.endOf("month").format("YYYY-MM-DD"),
         },
         headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+          Authorization: `Bearer ${cookies.token}`,
         },
       }),
     retry: false,

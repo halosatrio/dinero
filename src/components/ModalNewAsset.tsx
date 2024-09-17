@@ -16,6 +16,7 @@ import {
   postCreateAsset,
   PostCreateAssetPayload,
 } from "@/api/endpoints/post-create-asset";
+import { useCookies } from "react-cookie";
 
 type ModalNewAssetProps = {
   open: boolean;
@@ -35,6 +36,7 @@ export default function ModalNewAsset({
   close,
   refetch,
 }: ModalNewAssetProps) {
+  const [cookies] = useCookies(["token"]);
   const form = useForm<TransactionFormData>({
     initialValues: {
       date: new Date(),
@@ -48,7 +50,7 @@ export default function ModalNewAsset({
     mutationFn: async (bodyReq: PostCreateAssetPayload) => {
       postCreateAsset(bodyReq, {
         headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+          Authorization: `Bearer ${cookies.token}`,
         },
       });
     },

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { MantineProvider } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { CookiesProvider } from "react-cookie";
 
 import "./index.css";
 // Import styles of packages that you've installed.
@@ -31,7 +32,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <MantineProvider>
       <Notifications position="bottom-center" />
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <CookiesProvider defaultSetOptions={{ path: "/" }}>
+          <RouterProvider router={router} />
+        </CookiesProvider>
       </QueryClientProvider>
     </MantineProvider>
   </React.StrictMode>

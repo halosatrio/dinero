@@ -25,6 +25,7 @@ import {
   getReportAnnualCashflow,
   GetReportAnnualCashflowRes,
 } from "@/api/endpoints/get-report-annual";
+import { useCookies } from "react-cookie";
 
 export const Route = createFileRoute("/reports")({
   component: ReportPage,
@@ -39,6 +40,7 @@ const PERIOD_DATA = [
 
 function ReportPage() {
   const [value, setValue] = useState<string | null>("2024-3");
+  const [cookies] = useCookies(["token"]);
 
   const { data: dataQuarterEssentials, isLoading: loadingEssentials } =
     useQuery<GetReportQuarterRes>({
@@ -50,7 +52,7 @@ function ReportPage() {
             q: value?.split("-")[1],
           },
           headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+            Authorization: `Bearer ${cookies.token}`,
           },
         }),
       retry: false,
@@ -67,7 +69,7 @@ function ReportPage() {
             q: value?.split("-")[1],
           },
           headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+            Authorization: `Bearer ${cookies.token}`,
           },
         }),
       retry: false,
@@ -84,7 +86,7 @@ function ReportPage() {
             q: value?.split("-")[1],
           },
           headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+            Authorization: `Bearer ${cookies.token}`,
           },
         }),
       retry: false,
@@ -100,7 +102,7 @@ function ReportPage() {
             year: value,
           },
           headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+            Authorization: `Bearer ${cookies.token}`,
           },
         }),
       retry: false,

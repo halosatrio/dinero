@@ -17,6 +17,7 @@ import {
 } from "@/api/endpoints/get-asset-record";
 import ModalNewAsset from "@/components/ModalNewAsset";
 import { useDisclosure } from "@mantine/hooks";
+import { useCookies } from "react-cookie";
 
 export const Route = createFileRoute("/assets")({
   component: AssetPage,
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/assets")({
 
 function AssetPage() {
   const [opened, { open, close }] = useDisclosure();
+  const [cookies] = useCookies(["token"]);
 
   const {
     data: dataAssetRecord,
@@ -34,7 +36,7 @@ function AssetPage() {
     queryFn: () =>
       getAssetRecord({
         headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`,
+          Authorization: `Bearer ${cookies.token}`,
         },
       }),
     retry: false,

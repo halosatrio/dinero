@@ -1,40 +1,32 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import AppLayout from "../components/AppLayout";
 import { Button, Center, PasswordInput, Stack, TextInput } from "@mantine/core";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { useForm } from "@mantine/form";
+import {
+  postAuthLogin,
+  PostAuthLoginPayload,
+} from "@/api/endpoints/post-auth-login";
+import { useCookies } from "react-cookie";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
-interface LoginSchema {
-  email: string;
-  password: string;
-}
-
 function LoginPage() {
   const navigate = useNavigate({ from: "/login" });
-  const form = useForm<LoginSchema>({
+  const [_, setCookie] = useCookies(["token"]);
+  const form = useForm<PostAuthLoginPayload>({
     initialValues: {
       email: "",
       password: "",
     },
   });
 
-  const { mutate } = useMutation({
-    mutationFn: async (bodyReq: LoginSchema) => {
-      axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
-        ...bodyReq,
-      });
-    },
-    onSuccess: () => {
+  async function onSubmitLogin(bodyReq: PostAuthLoginPayload) {
+    await postAuthLogin(bodyReq, {}).then((data) => {
+      setCookie("token", data.data);
       navigate({ to: "/" });
-    },
-  });
-  function onSubmitLogin(bodyReq: LoginSchema) {
-    mutate({ ...bodyReq });
+    });
   }
 
   return (
