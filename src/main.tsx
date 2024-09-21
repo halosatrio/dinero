@@ -38,7 +38,7 @@ declare module "@tanstack/react-router" {
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error: QueryError) => {
-      if (error?.response?.status === 401) {
+      if (error?.response?.status === 401 || error?.response?.status === 204) {
         console.log(`Something went wrong:`, error?.response?.status);
         router.navigate({ to: "/login" });
       }
