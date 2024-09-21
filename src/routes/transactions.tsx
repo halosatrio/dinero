@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-// import AppLayout from "../components/AppLayout";
 import NavigationBar from "../components/NavigationBar";
 import {
   AppShell,
@@ -132,18 +131,18 @@ function TransactionsPage() {
           minimumFractionDigits: 0,
         }).format(dataMonthlySummary?.data?.cashflow.inflow)}
       </Table.Td>
-      {new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-      }).format(
-        dataMonthlySummary?.data?.cashflow.inflow -
-          dataMonthlySummary?.data?.cashflow.outflow
-      )}
+      <Table.Td>
+        {new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+          minimumFractionDigits: 0,
+        }).format(
+          dataMonthlySummary?.data?.cashflow.inflow -
+            dataMonthlySummary?.data?.cashflow.outflow
+        )}
+      </Table.Td>
     </Table.Tr>
-  ) : (
-    <Table.Tr></Table.Tr>
-  );
+  ) : null;
 
   return (
     <AppShell pt="lg">

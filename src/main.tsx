@@ -2,7 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { MantineProvider } from "@mantine/core";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { CookiesProvider } from "react-cookie";
 
 import "./index.css";
@@ -12,8 +16,11 @@ import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
 
-// Create a client
-const queryClient = new QueryClient();
+interface QueryError extends Error {
+  response?: {
+    status?: number;
+  };
+}
 
 // import the generated route tree
 import { routeTree } from "./routeTree.gen";
@@ -26,6 +33,18 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
 }
+
+// Create a client
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error: QueryError) => {
+      if (error?.response?.status === 401) {
+        console.log(`Something went wrong:`, error?.response?.status);
+        router.navigate({ to: "/login" });
+      }
+    },
+  }),
+});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

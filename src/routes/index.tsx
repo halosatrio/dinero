@@ -31,8 +31,8 @@ export const Route = createFileRoute("/")({
 });
 
 function IndexPage() {
-  const [opened, { open, close }] = useDisclosure();
   const [cookies] = useCookies(["token"]);
+  const [opened, { open, close }] = useDisclosure();
   const [modelEditOpened, { open: openModalEdit, close: closeModalEdit }] =
     useDisclosure();
   const [rowId, setRowId] = useState<number>();
